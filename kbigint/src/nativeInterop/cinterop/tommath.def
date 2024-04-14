@@ -1,0 +1,70 @@
+package = net.libtom.libtommath
+headers = tommath.h
+staticLibraries = libtommath.a
+compilerOpts = -DMP_USE_ENUMS -DMP_NO_FILE
+nonStrictEnums = mp_ord mp_sign
+strictEnums = mp_err
+# deprecated functions
+excludedFunctions = \
+    mp_get_mag_ull \
+    mp_get_ll \
+    mp_set_ll \
+    mp_init_ll \
+    mp_set_ull \
+    mp_init_ull \
+    mp_get_int \
+    mp_get_long \
+    mp_get_long_long \
+    mp_set_int \
+    mp_set_long \
+    mp_set_long_long \
+    mp_init_set_int \
+    mp_export \
+    mp_import \
+    mp_div_3 \
+    mp_rand_digit \
+    mp_get_bit \
+    mp_tc_xor \
+    mp_tc_or \
+    mp_tc_div_2d \
+    mp_log_u32 \
+    mp_expt_u32 \
+    mp_expt_d \
+    mp_expt_d_ex \
+    mp_root_u32 \
+    mp_n_root \
+    mp_n_root_ex \
+    mp_jacobi \
+    mp_prime_is_divisible \
+    mp_prime_random_ex \
+    mp_unsigned_bin_size \
+    mp_read_unsigned_bin \
+    mp_to_unsigned_bin \
+    mp_to_unsigned_bin_n \
+    mp_signed_bin_size \
+    mp_read_signed_bin \
+    mp_to_signed_bin \
+    mp_to_signed_bin_n \
+    mp_toradix_n
+
+---
+
+static inline int kbi_mp_sign(mp_int *a) {
+    return a->used == 0 ? 0 : a->sign != MP_NEG ? 1 : -1;
+}
+
+static inline mp_err kbi_mp_pow(mp_int *a, int n, mp_int *b) {
+    return n == 2 ? mp_sqr(a, b) : mp_expt_n(a, n, b);
+}
+
+static inline char kbi_mp_get_byte(mp_int *a) {
+    return (char) mp_get_i32(a);
+}
+
+static inline short kbi_mp_get_short(mp_int *a) {
+    return (short) mp_get_i32(a);
+}
+
+static inline float kbi_mp_get_float(mp_int *a) {
+    return (float) mp_get_double(a);
+}

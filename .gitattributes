@@ -1,0 +1,8 @@
+* text eol=lf
+
+gradlew linguist-generated
+gradlew.bat linguist-generated eol=crlf
+gradle/wrapper/gradle-wrapper.jar binary
+
+kbigint/src/nativeInterop/vendor/** linguist-vendored
+kbigint/src/nativeInterop/vendor/lib/* binary
