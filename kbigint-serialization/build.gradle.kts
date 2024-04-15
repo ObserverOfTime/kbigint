@@ -1,10 +1,9 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
 plugins {
     `maven-publish`
     signing
     alias(libs.plugins.kotlin.mpp)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -39,50 +38,30 @@ kotlin {
         generateTypeScriptDefinitions()
     }
 
-    linuxX64 {
-        compilations.configureEach {
-            cinterops.create("tommath") {
-                val vendor = defFile.parentFile.resolveSibling("vendor")
-                includeDirs.allHeaders(vendor.resolve("include"))
-                extraOpts("-libraryPath", vendor.resolve("lib"))
-            }
-        }
-    }
+    linuxX64()
 
     jvmToolchain(17)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     sourceSets {
         commonMain {
-            languageSettings {
-                compilerOptions {
-                    freeCompilerArgs.add("-Xexpect-actual-classes")
-                }
-            }
-
             dependencies {
+                implementation(project(":kbigint"))
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlin.serialization.core)
             }
         }
 
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
-            }
-        }
-
-        nativeTest {
-            languageSettings {
-                compilerOptions {
-                    optIn("kotlinx.cinterop.ExperimentalForeignApi")
-                }
+                implementation(libs.kotlin.serialization.json)
             }
         }
     }
 }
 
 android {
-    namespace = group.toString()
+    namespace = "$group.serialization"
     compileSdk = 34
     defaultConfig {
         minSdk = 21
@@ -98,11 +77,11 @@ android {
 
 publishing {
     publications {
-        create<MavenPublication>("kbigint") {
+        create<MavenPublication>("kbigint-serialization") {
             from(components["kotlin"])
             pom {
-                name.set("KBigInt")
-                description.set("Kotlin Multiplatform BigInteger library")
+                name.set("KBigInt Serialization")
+                description.set("Kotlin Multiplatform BigInteger serialization module")
                 url.set("https://observeroftime.github.io/kbigint/")
                 inceptionYear.set("2024")
                 licenses {
@@ -148,7 +127,7 @@ publishing {
 
 signing {
     isRequired = System.getenv("CI") != null
-    sign(publishing.publications["kbigint"])
+    sign(publishing.publications["kbigint-serialization"])
     if (isRequired) {
         val key = System.getenv("SIGNING_KEY")
         val password = System.getenv("SIGNING_PASSWORD")

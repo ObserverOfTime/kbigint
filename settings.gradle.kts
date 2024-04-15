@@ -9,4 +9,4 @@ pluginManagement {
 }
 
 include("kbigint")
-// include("kbigint-serialization")
+include("kbigint-serialization")

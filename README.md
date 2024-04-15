@@ -5,7 +5,7 @@ Kotlin Multiplatform BigInteger library.
 ## TODO
 
 - [x] Implement unit tests
-- [ ] Implement serialization
+- [x] Implement serialization
 - [ ] Implement more functions
     - [ ] `bits` _(getter)_
     - [ ] `logn`

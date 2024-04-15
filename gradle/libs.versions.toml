@@ -1,11 +1,20 @@
 [versions]
 kotlin-stdlib = "1.9.23"
+kotlin-serialization = "1.6.3"
 #noinspection GradleDependency
 android-gradle = {strictly = "8.2.0"}
 
 [libraries.kotlin-stdlib]
 module = "org.jetbrains.kotlin:kotlin-stdlib"
 version.ref = "kotlin-stdlib"
+
+[libraries.kotlin-serialization-core]
+module = "org.jetbrains.kotlinx:kotlinx-serialization-core"
+version.ref = "kotlin-serialization"
+
+[libraries.kotlin-serialization-json]
+module = "org.jetbrains.kotlinx:kotlinx-serialization-json"
+version.ref = "kotlin-serialization"
 
 [libraries.kotlin-test]
 module = "org.jetbrains.kotlin:kotlin-test"
