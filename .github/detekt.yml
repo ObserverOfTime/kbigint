@@ -1,0 +1,21 @@
+complexity:
+  TooManyFunctions:
+    active: false
+
+style:
+  WildcardImport:
+    active: false
+  UnusedPrivateProperty:
+    excludes:
+      - "**/commonMain/**"
+  UnusedParameter:
+    excludes:
+      - "**/KBigIntUtils.kt"
+  MagicNumber:
+    ignoreNumbers:
+      - "-1"
+      - "0"
+      - "1"
+      - "10"
+    ignoreAnnotated:
+      - Test
