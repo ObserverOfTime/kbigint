@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: jvmTest } # JVM
+          - { os: ubuntu-latest, target: jsNodeTest } # Node
+          - { os: ubuntu-latest, target: jsBrowserTest } # Browser
+          - { os: ubuntu-latest, target: testReleaseUnitTest } # Android
+
+          - { os: ubuntu-latest, target: linuxX64Test, native: true } # Linux
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Cache Kotlin/Native
+        uses: actions/cache@v4
+        if: matrix.native == true
+        with:
+          path: ${{runner.tool-cache}}/konan
+          key: konan-${{runner.os}}-${{hashFiles('gradle/libs.versions.toml')}}
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Set up Chromium
+        uses: browser-actions/setup-chrome@v1
+        if: matrix.target == 'jsBrowserTest'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        env:
+          GRADLE_USER_HOME: ${{runner.tool-cache}}/gradle
+          KONAN_DATA_DIR: ${{runner.tool-cache}}/konan
+      - name: Run tests
+        run: ./gradlew ${{matrix.target}}
+        env:
+          CHROMIUM_BIN: ${{steps.chromium.outputs.chrome-path}}
+          GRADLE_USER_HOME: ${{runner.tool-cache}}/gradle
+          KONAN_DATA_DIR: ${{runner.tool-cache}}/konan
