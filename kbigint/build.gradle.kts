@@ -1,5 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     `maven-publish`
@@ -18,10 +17,26 @@ kotlin {
     js(IR) {
         moduleName = project.name
 
-        nodejs()
+        browser {
+            webpackTask {
+                esModules.set(true)
+            }
+
+            testTask {
+                useKarma {
+                    useChromiumHeadless()
+                }
+            }
+        }
+
+        nodejs {
+            testTask {
+                useMocha()
+            }
+        }
+
         useEsModules()
         generateTypeScriptDefinitions()
-        binaries.library()
     }
 
     linuxX64 {
@@ -32,17 +47,35 @@ kotlin {
                 extraOpts("-libraryPath", vendor.resolve("lib"))
             }
         }
-        binaries.staticLib {
-            baseName = project.name
-        }
     }
 
     jvmToolchain(17)
 
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     sourceSets {
-        named("commonMain") {
+        commonMain {
+            languageSettings {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+            }
+
             dependencies {
                 implementation(libs.kotlin.stdlib)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
+        }
+
+        nativeTest {
+            languageSettings {
+                compilerOptions {
+                    freeCompilerArgs.add("-opt-in=kotlinx.cinterop.ExperimentalForeignApi")
+                }
             }
         }
     }
@@ -120,13 +153,5 @@ signing {
         val key = System.getenv("SIGNING_KEY")
         val password = System.getenv("SIGNING_PASSWORD")
         useInMemoryPgpKeys(key, password)
-    }
-}
-
-tasks.withType(KotlinCompilationTask::class).configureEach {
-    compilerOptions {
-        apiVersion.set(KotlinVersion.KOTLIN_1_9)
-        languageVersion.set(KotlinVersion.KOTLIN_1_9)
-        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }

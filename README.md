@@ -4,7 +4,7 @@ Kotlin Multiplatform BigInteger library.
 
 ## TODO
 
-- [ ] Implement tests & linting
+- [x] Implement unit tests
 - [ ] Implement serialization
 - [ ] Implement more functions
     - [ ] `bits` _(getter)_
@@ -17,9 +17,9 @@ Kotlin Multiplatform BigInteger library.
 - [ ] Support all platforms
   - [x] JVM
   - [x] Android
-  - [ ] JS
+  - [x] JS
     - [x] NodeJS
-    - [ ] Browser
+    - [x] Browser
   - [ ] Native
     - [x] Linux x64
     - [ ] Linux arm64

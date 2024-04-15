@@ -12,6 +12,9 @@ max_line_length = 120
 [LICENSE]
 max_line_length = off
 
+[.editorconfig]
+max_line_length = off
+
 [*.{json,yml,toml}]
 indent_size = 2
 
@@ -28,4 +31,4 @@ ij_kotlin_allow_trailing_comma = false
 ij_kotlin_allow_trailing_comma_on_call_site = false
 ij_kotlin_name_count_to_use_star_import = 10
 ij_kotlin_name_count_to_use_star_import_for_members = 10
-ij_kotlin_packages_to_use_import_on_demand = kotlinx.cinterop.*,net.libtom.libtommath.*
+ij_kotlin_packages_to_use_import_on_demand = kotlin.test.*,kotlinx.cinterop.*,net.libtom.libtommath.*
