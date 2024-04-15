@@ -1,3 +1,5 @@
+@file:JvmName("KBigInt")
+
 package io.github.observeroftime.kbigint
 
 import java.math.BigInteger
@@ -10,6 +12,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     actual constructor(number: Long) : this(number.toBigInteger())
 
     /** Convert a [ByteArray] to a [KBigInt]. */
+    @Suppress("unused")
     constructor(bytes: ByteArray) : this(BigInteger(bytes))
 
     @get:JvmName("signum")
@@ -102,7 +105,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     actual fun abs() = KBigInt(value.abs())
 
-    actual override fun compareTo(other: KBigInt) = value.compareTo(other.value)
+    actual override operator fun compareTo(other: KBigInt) = value.compareTo(other.value)
 
     actual override fun equals(other: Any?) = other is KBigInt && value == other.value
 
@@ -155,5 +158,6 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      *
      * @see [BigInteger.toByteArray]
      */
+    @Suppress("unused")
     fun toByteArray(): ByteArray = value.toByteArray()
 }

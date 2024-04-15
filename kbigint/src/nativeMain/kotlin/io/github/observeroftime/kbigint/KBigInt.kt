@@ -340,7 +340,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         KBigInt(result.ptr)
     }
 
-    actual override fun compareTo(other: KBigInt) = mp_cmp(value.ptr, other.value.ptr)
+    actual override operator fun compareTo(other: KBigInt) = mp_cmp(value.ptr, other.value.ptr)
 
     actual override fun equals(other: Any?) = other is KBigInt && mp_cmp(value.ptr, other.value.ptr) == 0
 

@@ -36,7 +36,6 @@ kotlin {
         }
 
         useEsModules()
-        generateTypeScriptDefinitions()
     }
 
     linuxX64 {
@@ -51,10 +50,10 @@ kotlin {
 
     jvmToolchain(17)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     sourceSets {
         commonMain {
             languageSettings {
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 compilerOptions {
                     freeCompilerArgs.add("-Xexpect-actual-classes")
                 }
@@ -68,14 +67,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
-            }
-        }
-
-        nativeTest {
-            languageSettings {
-                compilerOptions {
-                    optIn("kotlinx.cinterop.ExperimentalForeignApi")
-                }
             }
         }
     }

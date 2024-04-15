@@ -5,6 +5,8 @@ complexity:
 style:
   WildcardImport:
     active: false
+  ForbiddenComment:
+    active: false
   UnusedPrivateProperty:
     excludes:
       - "**/commonMain/**"

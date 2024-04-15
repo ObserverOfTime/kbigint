@@ -2,7 +2,7 @@ name: Lint
 
 on:
   push:
-    branch: [master]
+    branches: [master]
     paths:
       - "**/*.kt"
       - "**.kts"
@@ -10,6 +10,10 @@ on:
     paths:
       - "**/*.kt"
       - "**.kts"
+
+concurrency:
+  cancel-in-progress: true
+  group: ${{github.workflow}}-${{github.ref_name}}
 
 permissions:
   contents: read
@@ -35,7 +39,7 @@ jobs:
         run: $RUNNER_TOOL_CACHE/ktlint --reporter=sarif,output=build/reports/ktlint.sarif
       - name: Upload report
         uses: github/codeql-action/upload-sarif@v3
-        if: steps.ktlint.outcome == 'failure'
+        if: "!cancelled() && steps.ktlint.outcome == 'failure'"
         with:
           sarif_file: build/reports/ktlint.sarif
           category: ktlint
@@ -60,7 +64,7 @@ jobs:
           --jvm-target 17 -c .github/detekt.yml -r sarif:build/reports/detekt.sarif
       - name: Upload report
         uses: github/codeql-action/upload-sarif@v3
-        if: steps.detekt.outcome == 'failure'
+        if: "!cancelled() && steps.detekt.outcome == 'failure'"
         with:
           sarif_file: build/reports/detekt.sarif
           category: detekt

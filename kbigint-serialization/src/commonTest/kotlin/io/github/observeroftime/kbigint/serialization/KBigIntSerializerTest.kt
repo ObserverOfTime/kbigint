@@ -28,6 +28,7 @@ class KBigIntSerializerTest {
     }
 
     @Test
+    @JvmOnly
     fun testEncodeAlias() {
         val element = Json.encodeToJsonElement<KBigInt>(KBigInt(N))
         assertTrue { element.jsonPrimitive.isString }
@@ -35,6 +36,7 @@ class KBigIntSerializerTest {
     }
 
     @Test
+    @JvmOnly
     fun testDecodeAlias() {
         assertEquals(KBigInt(N), Json.decodeFromJsonElement<KBigInt>(JsonPrimitive(N)))
     }

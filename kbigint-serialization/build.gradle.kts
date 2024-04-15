@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     `maven-publish`
     signing
@@ -35,7 +37,6 @@ kotlin {
         }
 
         useEsModules()
-        generateTypeScriptDefinitions()
     }
 
     linuxX64()
@@ -52,6 +53,13 @@ kotlin {
         }
 
         commonTest {
+            languageSettings {
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                compilerOptions {
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+            }
+
             dependencies {
                 implementation(libs.kotlin.test)
                 implementation(libs.kotlin.serialization.json)

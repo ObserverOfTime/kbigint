@@ -1,7 +1,10 @@
 package io.github.observeroftime.kbigint
 
 import kotlin.test.*
+import kotlinx.cinterop.ExperimentalForeignApi
 
+@Suppress("UnnecessaryOptInAnnotation")
+@OptIn(ExperimentalForeignApi::class)
 actual class KBigIntTest {
     companion object {
         private val long = KBigInt(OVER_MAX_INT)

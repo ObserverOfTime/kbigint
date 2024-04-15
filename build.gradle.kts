@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
@@ -9,12 +10,20 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.observeroftime.kbigint"
-    version = "0.1.0"
-
     repositories {
         google()
         mavenCentral()
+    }
+}
+
+subprojects {
+    group = "io.github.observeroftime.kbigint"
+    version = "0.1.0"
+
+    if (System.getenv("CI") != null) {
+        tasks.withType(AbstractTestTask::class) {
+            testLogging.events("passed", "skipped", "failed")
+        }
     }
 }
 
@@ -23,10 +32,14 @@ plugins.withType<NodeJsRootPlugin> {
 }
 
 plugins.withType<YarnPlugin> {
-    the<YarnRootExtension>().download = false
+    the<YarnRootExtension>().apply {
+        download = false
+        yarnLockAutoReplace = true
+        yarnLockMismatchReport = YarnLockMismatchReport.WARNING
+    }
 }
 
-tasks.wrapper {
+tasks.named<Wrapper>("wrapper") {
     gradleVersion = "8.7"
     distributionType = Wrapper.DistributionType.BIN
 }

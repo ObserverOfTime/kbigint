@@ -86,7 +86,7 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Get the absolute value. */
     fun abs(): KBigInt
 
-    override fun compareTo(other: KBigInt): Int
+    override operator fun compareTo(other: KBigInt): Int
 
     override fun equals(other: Any?): Boolean
 
