@@ -91,6 +91,14 @@ kotlin {
                 implementation(libs.kotlin.test)
             }
         }
+
+        jsMain {
+            resources.srcDir(file("src/javascript"))
+        }
+
+        jsTest {
+            resources.srcDir(file("src/javascript"))
+        }
     }
 }
 

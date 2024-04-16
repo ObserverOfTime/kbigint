@@ -86,6 +86,10 @@ kotlin {
                 implementation(libs.kotlin.serialization.json)
             }
         }
+
+        jsTest {
+            resources.srcDir(project(":kbigint").file("src/javascript"))
+        }
     }
 }
 
