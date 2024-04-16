@@ -1,0 +1,4 @@
+[submodule "libtommath"]
+	path = kbigint/src/nativeInterop/libtommath
+	url = https://github.com/libtom/libtommath
+	branch = master

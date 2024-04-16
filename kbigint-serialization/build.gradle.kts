@@ -1,4 +1,7 @@
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
+val os: OperatingSystem = OperatingSystem.current()
 
 plugins {
     `maven-publish`
@@ -39,7 +42,25 @@ kotlin {
         useEsModules()
     }
 
-    linuxX64()
+    when {
+        os.isLinux -> {
+            linuxX64()
+            linuxArm64()
+        }
+        os.isWindows -> {
+            mingwX64()
+        }
+        os.isMacOsX -> {
+            macosX64()
+            macosArm64()
+            iosArm64()
+            iosSimulatorArm64()
+        }
+        else -> {
+            val arch = System.getProperty("os.arch")
+            throw GradleException("Unsupported platform: $os ($arch)")
+        }
+    }
 
     jvmToolchain(17)
 

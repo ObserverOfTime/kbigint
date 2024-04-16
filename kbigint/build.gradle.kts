@@ -1,4 +1,14 @@
+@file:Suppress("IMPLICIT_CAST_TO_ANY")
+
+import java.io.ByteArrayOutputStream
+import java.io.OutputStream.nullOutputStream
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
+
+val os: OperatingSystem = OperatingSystem.current()
+val libsDir = layout.buildDirectory.get().dir("tmp").dir("libs")
+val libtommathDir = projectDir.resolve("src/nativeInterop/libtommath")
 
 plugins {
     `maven-publish`
@@ -38,12 +48,24 @@ kotlin {
         useEsModules()
     }
 
-    linuxX64 {
-        compilations.configureEach {
+    when {
+        os.isLinux -> listOf(linuxX64(), linuxArm64())
+        os.isWindows -> listOf(mingwX64())
+        os.isMacOsX -> listOf(
+            macosArm64(),
+            macosX64(),
+            iosArm64(),
+            iosSimulatorArm64()
+        )
+        else -> {
+            val arch = System.getProperty("os.arch")
+            throw GradleException("Unsupported platform: $os ($arch)")
+        }
+    }.forEach {
+        it.compilations.configureEach {
             cinterops.create("tommath") {
-                val vendor = defFile.parentFile.resolveSibling("vendor")
-                includeDirs.allHeaders(vendor.resolve("include"))
-                extraOpts("-libraryPath", vendor.resolve("lib"))
+                includeDirs.allHeaders(libtommathDir)
+                extraOpts("-libraryPath", libsDir.dir(konanTarget.name))
             }
         }
     }
@@ -139,10 +161,198 @@ publishing {
 
 signing {
     isRequired = System.getenv("CI") != null
-    sign(publishing.publications["kbigint"])
     if (isRequired) {
         val key = System.getenv("SIGNING_KEY")
         val password = System.getenv("SIGNING_PASSWORD")
         useInMemoryPgpKeys(key, password)
+    }
+    sign(publishing.publications["kbigint"])
+}
+
+if (os.isLinux) {
+    tasks.getByName<CInteropProcess>("cinteropTommathLinuxX64") {
+        doFirst {
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS"
+                environment["CC"] = "gcc"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+
+    tasks.getByName<CInteropProcess>("cinteropTommathLinuxArm64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS"
+                environment["CROSS_COMPILE"] = "aarch64-linux-gnu-"
+                environment["CC"] = "aarch64-linux-gnu-gcc"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+} else if (os.isWindows) {
+    tasks.getByName<CInteropProcess>("cinteropTommathMingwX64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " -Wno-expansion-to-defined -Wno-declaration-after-statement -Wno-bad-function-cast"
+                environment["CC"] = "gcc"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+} else if (os.isMacOsX) {
+    tasks.getByName<CInteropProcess>("cinteropTommathMacosX64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            val output = ByteArrayOutputStream()
+            exec {
+                standardOutput = output
+                commandLine("xcrun", "--sdk", "macosx", "--show-sdk-path")
+            }
+            val sysroot = output.use { it.toString().trimEnd() }
+
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " --target=x86_64-apple-macos -isysroot $sysroot -Wno-unused-but-set-variable"
+                environment["CC"] = "clang"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+
+    tasks.getByName<CInteropProcess>("cinteropTommathMacosArm64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            val output = ByteArrayOutputStream()
+            exec {
+                standardOutput = output
+                commandLine("xcrun", "--sdk", "macosx", "--show-sdk-path")
+            }
+            val sysroot = output.use { it.toString().trimEnd() }
+
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " --target=arm64-apple-macos -isysroot $sysroot -Wno-unused-but-set-variable"
+                environment["CC"] = "clang"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+
+    tasks.getByName<CInteropProcess>("cinteropTommathIosArm64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            val output = ByteArrayOutputStream()
+            exec {
+                standardOutput = output
+                commandLine("xcrun", "--sdk", "iphoneos", "--show-sdk-path")
+            }
+            val sysroot = output.use { it.toString().trimEnd() }
+
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " --target=arm64-apple-ios -isysroot $sysroot -Wno-unused-but-set-variable"
+                environment["CC"] = "clang"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+
+    tasks.getByName<CInteropProcess>("cinteropTommathIosSimulatorArm64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            val output = ByteArrayOutputStream()
+            exec {
+                standardOutput = output
+                commandLine("xcrun", "--sdk", "iphoneos", "--show-sdk-path")
+            }
+            val sysroot = output.use { it.toString().trimEnd() }
+
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                standardOutput = nullOutputStream()
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " --target=arm64-apple-ios-simulator -isysroot $sysroot -Wno-unused-but-set-variable"
+                environment["CC"] = "clang"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
     }
 }

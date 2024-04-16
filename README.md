@@ -14,20 +14,19 @@ Kotlin Multiplatform BigInteger library.
     - [ ] `contructor(ByteArray)`
     - [ ] `random` _(static)_
     - [ ] `min`/`max` _(static)_
-- [ ] Support all platforms
+- [ ] Support all major platforms
   - [x] JVM
   - [x] Android
   - [x] JS
     - [x] NodeJS
     - [x] Browser
-  - [ ] Native
+  - [x] Native
     - [x] Linux x64
-    - [ ] Linux arm64
-    - [ ] Windows x64
-    - [ ] macOS x64
-    - [ ] macOS arm64
-    - [ ] iOS x64
-    - [ ] iOS arm64
+    - [x] Linux arm64
+    - [x] Windows x64
+    - [x] macOS x64
+    - [x] macOS arm64
+    - [x] iOS arm64
   - [ ] WASM
     - [ ] JS
     - [ ] WASI

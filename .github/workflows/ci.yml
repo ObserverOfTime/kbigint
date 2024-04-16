@@ -25,27 +25,30 @@ permissions:
 jobs:
   test:
     runs-on: ${{matrix.os}}
+    name: Test ${{matrix.platform}} platform
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, target: jvmTest } # JVM
-          - { os: ubuntu-latest, target: testReleaseUnitTest } # Android
+          - { os: ubuntu-latest, target: jvmTest, platform: jvm }
+          - { os: ubuntu-latest, target: testReleaseUnitTest, platform: android }
 
-          - { os: ubuntu-latest, target: jsNodeTest } # Node
-          - { os: ubuntu-latest, target: jsBrowserTest } # Browser
+          - { os: ubuntu-latest, target: jsNodeTest, platform: node }
+          - { os: ubuntu-latest, target: jsBrowserTest, platform: browser }
 
-          - { os: ubuntu-latest, target: linuxX64Test } # Linux
+          - { os: ubuntu-latest, target: linuxX64Test, platform: linux-x64 }
+          - { os: ubuntu-latest, target: compileKotlinLinuxArm64, platform: linux-arm64 }
+
+          - { os: windows-latest, target: mingwX64Test, platform: windows-x64 }
+
+          - { os: macos-13, target: macosX64Test, platform: macos-x64 }
+          - { os: macos-14, target: macosArm64Test, platform: macos-arm64 }
+          - { os: macos-14, target: iosSimulatorArm64Test, platform: ios-arm64 }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Cache Kotlin/Native
-        uses: actions/cache@v4
-        if: >-
-          startsWith(matrix.target, 'linux')
         with:
-          path: ${{runner.tool_cache}}/konan
-          key: konan-${{runner.os}}-${{hashFiles('gradle/libs.versions.toml')}}
+          submodules: true
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -54,12 +57,36 @@ jobs:
       - name: Set up Chromium
         uses: browser-actions/setup-chrome@v1
         id: chromium
-        if: matrix.target == 'jsBrowserTest'
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+        if: matrix.platform == 'browser'
+      - name: Set up cross compilation
+        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
+        if: matrix.platform == 'linux-arm64'
+      - name: Cache Kotlin/Native prebuilt
+        uses: actions/cache@v4
         with:
-          add-job-summary: on-failure
-          dependency-graph: generate-and-submit
+          path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
+          key: konan-${{matrix.os}}-prebuilt-${{env.KOTLIN_VERSION}}
+        env:
+          KOTLIN_VERSION: 1923
+      - name: Cache Kotlin/Native dependencies
+        uses: actions/cache@v4
+        if: endsWith(matrix.platform, '64')
+        with:
+          path: ${{runner.tool_cache}}/konan/dependencies
+          key: >-
+            konan-${{matrix.os}}-dependencies-${{
+            matrix.platform == 'ios-arm64' && 'macos-arm64' || matrix.platform}}
+      - name: Cache Gradle wrapper
+        uses: actions/cache@v4
+        with:
+          path: |-
+            ${{runner.tool_cache}}/gradle/wrapper/dists
+            ${{runner.tool_cache}}/gradle/caches/*/generated-gradle-jars
+          key: >-
+            gradle-wrapper-${{matrix.os}}-${{
+            hashFiles('gradle/wrapper/gradle-wrapper.properties')}}
+      - name: Submit dependency graph
+        uses: gradle/actions/dependency-submission@v3
         env:
           GRADLE_USER_HOME: ${{runner.tool_cache}}/gradle
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan

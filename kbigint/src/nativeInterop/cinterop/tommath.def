@@ -1,5 +1,6 @@
 package = net.libtom.libtommath
 headers = tommath.h
+headerFilter = tommath.h
 staticLibraries = libtommath.a
 compilerOpts = -DMP_USE_ENUMS -DMP_NO_FILE
 nonStrictEnums = mp_ord mp_sign
