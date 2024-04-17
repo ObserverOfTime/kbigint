@@ -54,6 +54,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: gradle
+          cache-dependency-path: |
+            gradle/libs.versions.toml
+            gradle/wrapper/gradle-wrapper.properties
       - name: Set up Chromium
         uses: browser-actions/setup-chrome@v1
         id: chromium
@@ -61,13 +65,17 @@ jobs:
       - name: Set up cross compilation
         run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
         if: matrix.platform == 'linux-arm64'
+      - name: Get the Kotlin version
+        id: kotlin
+        shell: sh
+        run: >-
+          sed 's/kotlin-stdlib = "([0-9]+)\.([0-9]+)\.([0-9]+)"/version=\1\2\3/p'
+          -rn gradle/libs.versions.toml >> "$GITHUB_OUTPUT"
       - name: Cache Kotlin/Native prebuilt
         uses: actions/cache@v4
         with:
           path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
-          key: konan-${{matrix.os}}-prebuilt-${{env.KOTLIN_VERSION}}
-        env:
-          KOTLIN_VERSION: 1923
+          key: konan-${{matrix.os}}-prebuilt-${{steps.kotlin.outputs.version}}
       - name: Cache Kotlin/Native dependencies
         uses: actions/cache@v4
         if: endsWith(matrix.platform, '64')
@@ -76,23 +84,17 @@ jobs:
           key: >-
             konan-${{matrix.os}}-dependencies-${{
             matrix.platform == 'ios-arm64' && 'macos-arm64' || matrix.platform}}
-      - name: Cache Gradle wrapper
-        uses: actions/cache@v4
-        with:
-          path: |-
-            ${{runner.tool_cache}}/gradle/wrapper/dists
-            ${{runner.tool_cache}}/gradle/caches/*/generated-gradle-jars
-          key: >-
-            gradle-wrapper-${{matrix.os}}-${{
-            hashFiles('gradle/wrapper/gradle-wrapper.properties')}}
       - name: Submit dependency graph
         uses: gradle/actions/dependency-submission@v3
+        if: github.ref_name == 'master'
+        with:
+          cache-disabled: true
+          add-job-summary: never
         env:
           GRADLE_USER_HOME: ${{runner.tool_cache}}/gradle
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
       - name: Run tests
-        run: ./gradlew ${{matrix.target}}
+        run: ./gradlew --no-daemon ${{matrix.target}}
         env:
-          CHROMIUM_BIN: ${{steps.chromium.outputs.chrome-path}}
           GRADLE_USER_HOME: ${{runner.tool_cache}}/gradle
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
