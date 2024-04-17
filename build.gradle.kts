@@ -1,3 +1,4 @@
+import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
@@ -7,6 +8,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 plugins {
     alias(libs.plugins.kotlin.mpp) apply false
     alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.dokka)
 }
 
 allprojects {
@@ -37,6 +39,11 @@ plugins.withType<YarnPlugin> {
         yarnLockAutoReplace = true
         yarnLockMismatchReport = YarnLockMismatchReport.WARNING
     }
+}
+
+tasks.named<DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
+    moduleName.set("KBigInt")
+    includes.from("README.md")
 }
 
 tasks.named<Wrapper>("wrapper") {

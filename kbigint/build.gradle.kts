@@ -1,8 +1,7 @@
-@file:Suppress("IMPLICIT_CAST_TO_ANY")
-
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream.nullOutputStream
 import org.gradle.internal.os.OperatingSystem
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 
@@ -15,6 +14,7 @@ plugins {
     signing
     alias(libs.plugins.kotlin.mpp)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {
@@ -362,5 +362,13 @@ if (os.isLinux) {
                 into(libsDir.dir(konanTarget.name))
             }
         }
+    }
+}
+
+tasks.withType<DokkaTaskPartial>().configureEach {
+    moduleName.set("KBigInt")
+    suppressInheritedMembers.set(false)
+    dokkaSourceSets.configureEach {
+        includes.from(file("README.md"))
     }
 }

@@ -3,6 +3,7 @@ kotlin-stdlib = "1.9.23"
 kotlin-serialization = "1.6.3"
 #noinspection GradleDependency
 android-gradle = {strictly = "8.2.0"}
+dokka = "1.9.20"
 
 [libraries.kotlin-stdlib]
 module = "org.jetbrains.kotlin:kotlin-stdlib"
@@ -31,3 +32,7 @@ version.ref = "kotlin-stdlib"
 [plugins.android-library]
 id = "com.android.library"
 version.ref = "android-gradle"
+
+[plugins.dokka]
+id = "org.jetbrains.dokka"
+version.ref = "dokka"

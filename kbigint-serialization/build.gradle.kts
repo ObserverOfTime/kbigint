@@ -1,4 +1,5 @@
 import org.gradle.internal.os.OperatingSystem
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 val os: OperatingSystem = OperatingSystem.current()
@@ -9,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.mpp)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {
@@ -144,7 +146,7 @@ publishing {
     repositories {
         maven {
             name = "GitHub"
-            url = uri("https://maven.pkg.github.com/ObserverOfTime/kbigint")
+            url = uri("https://maven.pkg.github.com/observeroftime/kbigint")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
@@ -165,5 +167,13 @@ signing {
         val key = System.getenv("SIGNING_KEY")
         val password = System.getenv("SIGNING_PASSWORD")
         useInMemoryPgpKeys(key, password)
+    }
+}
+
+tasks.withType<DokkaTaskPartial>().configureEach {
+    moduleName.set("KBigInt Serialization")
+    suppressInheritedMembers.set(false)
+    dokkaSourceSets.configureEach {
+        includes.from(file("README.md"))
     }
 }

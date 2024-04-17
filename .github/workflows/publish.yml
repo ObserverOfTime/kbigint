@@ -1,4 +1,4 @@
-name: Publish packages
+name: Publish
 
 on:
   push:
@@ -56,8 +56,8 @@ jobs:
         id: kotlin
         shell: sh
         run: >-
-          sed 's/kotlin-stdlib = "([0-9]+)\.([0-9]+)\.([0-9]+)"/version=\1\2\3/p'
-          -rn gradle/libs.versions.toml >> "$GITHUB_OUTPUT"
+          sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/version=\1\2\3/p'
+          gradle/libs.versions.toml >> "$GITHUB_OUTPUT"
       - name: Cache Kotlin/Native prebuilt
         uses: actions/cache@v4
         with:
