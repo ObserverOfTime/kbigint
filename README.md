@@ -32,5 +32,5 @@ Kotlin Multiplatform BigInteger library.
     - [ ] WASI
 - [ ] Publish docs on GitHub pages
 - [ ] Publish packages
-  - [ ] GitHub Package Registry
+  - [x] GitHub Package Registry
   - [ ] Maven Central Repository

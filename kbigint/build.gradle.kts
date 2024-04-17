@@ -153,9 +153,9 @@ publishing {
     repositories {
         maven {
             name = "GitHub"
-            url = uri("https://maven.pkg.github.com/ObserverOfTime/kbigint")
+            url = uri("https://maven.pkg.github.com/observeroftime/kbigint")
             credentials {
-                username = System.getenv("GITHUB_REPOSITORY_OWNER")
+                username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
             }
         }

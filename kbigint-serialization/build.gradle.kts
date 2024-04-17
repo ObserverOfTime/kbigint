@@ -110,11 +110,11 @@ android {
 
 publishing {
     publications {
-        create<MavenPublication>("kbigint-serialization") {
+        create<MavenPublication>("kbigintSerialization") {
             from(components["kotlin"])
             pom {
                 name.set("KBigInt Serialization")
-                description.set("Kotlin Multiplatform BigInteger serialization module")
+                description.set("The serialization module of the KBigInt library")
                 url.set("https://observeroftime.github.io/kbigint/")
                 inceptionYear.set("2024")
                 licenses {
@@ -146,7 +146,7 @@ publishing {
             name = "GitHub"
             url = uri("https://maven.pkg.github.com/ObserverOfTime/kbigint")
             credentials {
-                username = System.getenv("GITHUB_REPOSITORY_OWNER")
+                username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
@@ -160,7 +160,7 @@ publishing {
 
 signing {
     isRequired = System.getenv("CI") != null
-    sign(publishing.publications["kbigint-serialization"])
+    sign(publishing.publications["kbigintSerialization"])
     if (isRequired) {
         val key = System.getenv("SIGNING_KEY")
         val password = System.getenv("SIGNING_PASSWORD")
