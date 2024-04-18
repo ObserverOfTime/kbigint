@@ -51,20 +51,20 @@ jobs:
             gradle/wrapper/gradle-wrapper.properties
       - name: Set up cross compilation
         run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
-        if: matrix.platform == 'linux-arm64'
+        if: matrix.platform == 'linux-arm64' || matrix.platform == 'common'
       - name: Get the Kotlin version
         id: kotlin
         shell: sh
         run: >-
           sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/version=\1\2\3/p'
           gradle/libs.versions.toml >> "$GITHUB_OUTPUT"
-      - name: Cache Kotlin/Native prebuilt
-        uses: actions/cache@v4
+      - name: Restore Kotlin/Native prebuilt
+        uses: actions/cache/restore@v4
         with:
           path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
           key: konan-${{matrix.os}}-prebuilt-${{steps.kotlin.outputs.version}}
-      - name: Cache Kotlin/Native dependencies
-        uses: actions/cache@v4
+      - name: Restore Kotlin/Native dependencies
+        uses: actions/cache/restore@v4
         if: endsWith(matrix.platform, '64')
         with:
           path: ${{runner.tool_cache}}/konan/dependencies
@@ -72,7 +72,17 @@ jobs:
             konan-${{matrix.os}}-dependencies-${{
             matrix.platform == 'ios-arm64' && 'macos-arm64' || matrix.platform}}
       - name: Publish packages
-        run: ./gradlew --no-daemon ${{matrix.target}}
+        shell: bash
+        run: |-
+          target='publish${{matrix.target}}PublicationToGitHubRepository'
+          if [[ '${{matrix.platform}}' == 'common' ]]; then
+            ./gradlew --no-daemon ":kbigint:$target" ":kbigint-serialization:$target"
+          else
+            ./gradlew --no-daemon ":kbigint:$target"
+          fi
         env:
+          GITHUB_TOKEN: ${{github.token}}
+          SIGNING_KEY: ${{secrets.SIGNING_KEY}}
+          SIGNING_PASSWORD: ${{secrets.SIGNING_PASSWORD}}
           GRADLE_USER_HOME: ${{runner.tool_cache}}/gradle
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
