@@ -8,12 +8,14 @@ on:
       - "**/*.kts"
       - gradle/**
       - gradle.properties
+      - .github/workflows/ci.yml
   pull_request:
     paths:
       - "**/*.kt"
       - "**/*.kts"
       - gradle/**
       - gradle.properties
+      - .github/workflows/ci.yml
 
 concurrency:
   cancel-in-progress: true
@@ -30,20 +32,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, target: jvmTest, platform: jvm }
-          - { os: ubuntu-latest, target: testReleaseUnitTest, platform: android }
-
-          - { os: ubuntu-latest, target: jsNodeTest, platform: node }
-          - { os: ubuntu-latest, target: jsBrowserTest, platform: browser }
-
-          - { os: ubuntu-latest, target: linuxX64Test, platform: linux-x64 }
-          - { os: ubuntu-latest, target: compileKotlinLinuxArm64, platform: linux-arm64 }
-
-          - { os: windows-latest, target: mingwX64Test, platform: windows-x64 }
-
-          - { os: macos-13, target: macosX64Test, platform: macos-x64 }
-          - { os: macos-14, target: macosArm64Test, platform: macos-arm64 }
-          - { os: macos-14, target: iosSimulatorArm64Test, platform: ios-arm64 }
+          - os: ubuntu-latest
+            platform: JVM
+            targets: jvmTest
+          - os: ubuntu-latest
+            platform: Android
+            targets: testReleaseUnitTest
+          - os: ubuntu-latest
+            platform: JS
+            targets: jsNodeTest jsBrowserTest
+          - os: ubuntu-latest
+            platform: Linux
+            targets: compileKotlinLinuxArm64 linuxX64Test
+          - os: windows-latest
+            platform: Windows
+            targets: mingwX64Test
+          - os: macos-14
+            platform: macOS/iOS
+            targets: macosX64Test macosArm64Test iosSimulatorArm64Test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -61,29 +67,28 @@ jobs:
       - name: Set up Chromium
         uses: browser-actions/setup-chrome@v1
         id: chromium
-        if: matrix.platform == 'browser'
+        if: matrix.platform == 'JS'
       - name: Set up cross compilation
         run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
-        if: matrix.platform == 'linux-arm64'
-      - name: Get the Kotlin version
-        id: kotlin
+        if: matrix.platform == 'Linux'
+      - name: Get the cache versions
+        id: versions
         shell: sh
-        run: >-
-          sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/version=\1\2\3/p'
-          gradle/libs.versions.toml >> "$GITHUB_OUTPUT"
+        run: |-
+          {
+            sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/kotlin=\1.\2.\3/p' gradle/libs.versions.toml
+          } >> "$GITHUB_OUTPUT"
       - name: Cache Kotlin/Native prebuilt
         uses: actions/cache@v4
         with:
           path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
-          key: konan-${{matrix.os}}-prebuilt-${{steps.kotlin.outputs.version}}
+          key: konan-${{runner.os}}-prebuilt-${{steps.versions.outputs.kotlin}}
       - name: Cache Kotlin/Native dependencies
         uses: actions/cache@v4
-        if: endsWith(matrix.platform, '64')
+        if: matrix.platform != 'JVM' && matrix.platform != 'Android' && matrix.platform != 'JS'
         with:
           path: ${{runner.tool_cache}}/konan/dependencies
-          key: >-
-            konan-${{matrix.os}}-dependencies-${{
-            matrix.platform == 'ios-arm64' && 'macos-arm64' || matrix.platform}}
+          key: konan-${{runner.os}}-dependencies
       - name: Submit dependency graph
         uses: gradle/actions/dependency-submission@v3
         if: github.ref_name == 'master'
@@ -91,8 +96,9 @@ jobs:
           cache-disabled: true
           add-job-summary: never
         env:
+          GRADLE_OPTS: -Dorg.gradle.daemon=false
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
       - name: Run tests
-        run: ./gradlew --no-daemon ${{matrix.target}}
+        run: ./gradlew --no-daemon ${{matrix.targets}}
         env:
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
