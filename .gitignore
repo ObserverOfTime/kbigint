@@ -15,6 +15,12 @@ out/
 *.ipr
 *.trace
 
+!.idea/conventionalCommit.json
+!.idea/conventionalCommit.xml
+!.idea/detekt.xml
+!.idea/ktlint-plugin.xml
+!.idea/vcs.xml
+
 ### Vim ###
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
