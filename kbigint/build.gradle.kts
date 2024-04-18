@@ -368,7 +368,14 @@ if (os.isLinux) {
 tasks.withType<DokkaTaskPartial>().configureEach {
     moduleName.set("KBigInt")
     suppressInheritedMembers.set(false)
+    pluginsMapConfiguration.set(
+        mapOf(
+            "org.jetbrains.dokka.base.DokkaBase" to
+                """{"footerMessage": "(c) 2024 ObserverOfTime"}"""
+        )
+    )
     dokkaSourceSets.configureEach {
+        jdkVersion.set(17)
         includes.from(file("README.md"))
     }
 }

@@ -44,6 +44,12 @@ plugins.withType<YarnPlugin> {
 tasks.named<DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
     moduleName.set("KBigInt")
     includes.from("README.md")
+    pluginsMapConfiguration.set(
+        mapOf(
+            "org.jetbrains.dokka.base.DokkaBase" to
+                """{"footerMessage": "(c) 2024 ObserverOfTime"}"""
+        )
+    )
 }
 
 tasks.named<Wrapper>("wrapper") {

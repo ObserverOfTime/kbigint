@@ -1,3 +1,4 @@
+import java.net.URL
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
@@ -173,7 +174,17 @@ signing {
 tasks.withType<DokkaTaskPartial>().configureEach {
     moduleName.set("KBigInt Serialization")
     suppressInheritedMembers.set(false)
+    pluginsMapConfiguration.set(
+        mapOf(
+            "org.jetbrains.dokka.base.DokkaBase" to
+                """{"footerMessage": "(c) 2024 ObserverOfTime"}"""
+        )
+    )
     dokkaSourceSets.configureEach {
+        jdkVersion.set(17)
         includes.from(file("README.md"))
+        externalDocumentationLink {
+            url.set(URL("https://kotlinlang.org/api/kotlinx.serialization/"))
+        }
     }
 }

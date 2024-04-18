@@ -1,5 +1,7 @@
 name: Docs
 
+run-name: ${{github.event.workflow_run.head_commit.message}}
+
 on:
   workflow_run:
     workflows: [CI]
@@ -49,21 +51,11 @@ jobs:
         with:
           path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
           key: konan-ubuntu-latest-prebuilt-${{steps.kotlin.outputs.version}}
-      - name: Restore Kotlin/Native dependencies (x64)
+      - name: Restore Kotlin/Native dependencies
         uses: actions/cache/restore@v4
         with:
-          path: |
-            ${{runner.tool_cache}}/konan/dependencies/libffi-*
-            ${{runner.tool_cache}}/konan/dependencies/lldb-*
-            ${{runner.tool_cache}}/konan/dependencies/llvm-*
-            ${{runner.tool_cache}}/konan/dependencies/x86_64-*
-          key: konan-ubuntu-latest-dependencies-linux-x64
-      - name: Restore Kotlin/Native dependencies (arm64)
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ${{runner.tool_cache}}/konan/dependencies/aarch64-*
-            ${{runner.tool_cache}}/konan/dependencies/qemu-*
+          path: ${{runner.tool_cache}}/konan/dependencies
+          # NOTE: we can't restore both x64 & arm64 for w/e reason and arm64 has more files
           key: konan-ubuntu-latest-dependencies-linux-arm64
       - name: Build documentation
         run: ./gradlew --no-daemon dokkaHtmlMultiModule
