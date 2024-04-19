@@ -1,4 +1,3 @@
-import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
@@ -20,7 +19,7 @@ allprojects {
 
 subprojects {
     group = "io.github.observeroftime.kbigint"
-    version = "0.1.0"
+    version = "0.1.1"
 
     if (System.getenv("CI") != null) {
         tasks.withType(AbstractTestTask::class) {
@@ -41,7 +40,7 @@ plugins.withType<YarnPlugin> {
     }
 }
 
-tasks.named<DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
+tasks.dokkaHtmlMultiModule {
     moduleName.set("KBigInt")
     includes.from("README.md")
     pluginsMapConfiguration.set(
@@ -52,7 +51,7 @@ tasks.named<DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
     )
 }
 
-tasks.named<Wrapper>("wrapper") {
+tasks.wrapper {
     gradleVersion = "8.7"
     distributionType = Wrapper.DistributionType.BIN
 }

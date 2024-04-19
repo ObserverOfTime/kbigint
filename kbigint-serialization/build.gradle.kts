@@ -1,6 +1,5 @@
 import java.net.URL
 import org.gradle.internal.os.OperatingSystem
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 val os: OperatingSystem = OperatingSystem.current()
@@ -111,67 +110,7 @@ android {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("kbigintSerialization") {
-            from(components["kotlin"])
-            pom {
-                name.set("KBigInt Serialization")
-                description.set("The serialization module of the KBigInt library")
-                url.set("https://observeroftime.github.io/kbigint/")
-                inceptionYear.set("2024")
-                licenses {
-                    license {
-                        name.set("Apache License 2.0")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("ObserverOfTime")
-                        name.set("Ioannis Somos")
-                        email.set("chronobserver@disroot.org")
-                        url.set("https://github.com/ObserverOfTime")
-                    }
-                }
-                scm {
-                    url.set("https://github.com/ObserverOfTime/kbigint")
-                }
-                ciManagement {
-                    system.set("GitHub Actions")
-                    url.set("https://github.com/ObserverOfTime/kbigint/actions")
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHub"
-            url = uri("https://maven.pkg.github.com/observeroftime/kbigint")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-
-        maven {
-            name = "local"
-            url = uri(rootProject.layout.buildDirectory.dir("repos"))
-        }
-    }
-}
-
-signing {
-    isRequired = System.getenv("CI") != null
-    sign(publishing.publications["kbigintSerialization"])
-    if (isRequired) {
-        val key = System.getenv("SIGNING_KEY")
-        val password = System.getenv("SIGNING_PASSWORD")
-        useInMemoryPgpKeys(key, password)
-    }
-}
-
-tasks.withType<DokkaTaskPartial>().configureEach {
+tasks.dokkaHtmlPartial {
     moduleName.set("KBigInt Serialization")
     suppressInheritedMembers.set(false)
     pluginsMapConfiguration.set(
@@ -187,4 +126,82 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             url.set(URL("https://kotlinlang.org/api/kotlinx.serialization/"))
         }
     }
+}
+
+tasks.create<Jar>("javadocJar") {
+    group = "documentation"
+    dependsOn(tasks.dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(tasks.dokkaHtml.get().outputDirectory)
+}
+
+publishing {
+    publications.withType(MavenPublication::class) {
+        if (System.getenv("SONATYPE_USERNAME") != null)
+            artifact(tasks["javadocJar"])
+        pom {
+            name.set("KBigInt Serialization")
+            description.set("The serialization module of the KBigInt library")
+            url.set("https://observeroftime.github.io/kbigint/")
+            inceptionYear.set("2024")
+            licenses {
+                license {
+                    name.set("Apache License 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                }
+            }
+            developers {
+                developer {
+                    id.set("ObserverOfTime")
+                    name.set("Ioannis Somos")
+                    email.set("chronobserver@disroot.org")
+                    url.set("https://github.com/ObserverOfTime")
+                }
+            }
+            scm {
+                url.set("https://github.com/ObserverOfTime/kbigint")
+                connection.set("scm:git:git://github.com/ObserverOfTime/kbigint.git")
+                developerConnection.set("scm:git:ssh://github.com/ObserverOfTime/kbigint.git")
+            }
+            ciManagement {
+                system.set("GitHub Actions")
+                url.set("https://github.com/ObserverOfTime/kbigint/actions")
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHub"
+            url = uri("https://maven.pkg.github.com/observeroftime/kbigint")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+
+        maven {
+            name = "Sonatype"
+            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = System.getenv("SONATYPE_USERNAME")
+                password = System.getenv("SONATYPE_PASSWORD")
+            }
+        }
+
+        maven {
+            name = "local"
+            url = uri(rootProject.layout.buildDirectory.dir("repos"))
+        }
+    }
+}
+
+signing {
+    isRequired = System.getenv("CI") != null
+    if (isRequired) {
+        val key = System.getenv("SIGNING_KEY")
+        val password = System.getenv("SIGNING_PASSWORD")
+        useInMemoryPgpKeys(key, password)
+    }
+    sign(publishing.publications)
 }

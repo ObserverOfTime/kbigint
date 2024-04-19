@@ -90,3 +90,84 @@ jobs:
           SIGNING_KEY: ${{secrets.SIGNING_KEY}}
           SIGNING_PASSWORD: ${{secrets.SIGNING_PASSWORD}}
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
+  central:
+    runs-on: ${{matrix.os}}
+    name: Publish ${{matrix.platform}} packages on Maven Central
+    environment:
+      name: sonatype
+      url: https://central.sonatype.com/artifact/io.github.observeroftime/kbigint
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: common
+            targets: >-
+              :kbigint:publishKotlinMultiplatformPublicationToSonatypeRepository
+              :kbigint-serialization:publishKotlinMultiplatformPublicationToSonatypeRepository
+          - os: ubuntu-latest
+            platform: JVM
+            targets: :kbigint:publishJvmPublicationToSonatypeRepository
+          - os: ubuntu-latest
+            platform: Android
+            targets: :kbigint:publishAndroidReleasePublicationToSonatypeRepository
+          - os: ubuntu-latest
+            platform: JS
+            target: :kbigint:publishJsPublicationToSonatypeRepository
+          - os: ubuntu-latest
+            platform: Linux
+            targets: >-
+              :kbigint:publishLinuxX64PublicationToSonatypeRepository
+              :kbigint:publishLinuxArm64PublicationToSonatypeRepository
+          - os: windows-latest
+            platform: Windows
+            targets: :kbigint:publishMingwX64PublicationToSonatypeRepository
+          - os: macos-14
+            platform: macOS/iOS
+            targets: >-
+              :kbigint:publishMacosX64PublicationToSonatypeRepository
+              :kbigint:publishMacosArm64PublicationToSonatypeRepository
+              :kbigint:publishIosArm64PublicationToSonatypeRepository
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+          cache-dependency-path: |
+            gradle/libs.versions.toml
+            gradle/wrapper/gradle-wrapper.properties
+      - name: Set up cross compilation
+        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
+        if: matrix.platform == 'Linux' || matrix.platform == 'common'
+      - name: Get the cache versions
+        id: versions
+        shell: sh
+        run: |-
+          {
+            sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/kotlin=\1.\2.\3/p' gradle/libs.versions.toml
+          } >> "$GITHUB_OUTPUT"
+      - name: Restore Kotlin/Native prebuilt
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
+          key: konan-${{runner.os}}-prebuilt-${{steps.versions.outputs.kotlin}}
+      - name: Restore Kotlin/Native dependencies
+        uses: actions/cache/restore@v4
+        if: matrix.platform != 'JVM' && matrix.platform != 'Android' && matrix.platform != 'JS'
+        with:
+          path: ${{runner.tool_cache}}/konan/dependencies
+          key: konan-${{runner.os}}-dependencies
+      - name: Publish packages
+        run: ./gradlew --no-daemon --info ${{matrix.targets}}
+        env:
+          SIGNING_KEY: ${{secrets.SIGNING_KEY}}
+          SIGNING_PASSWORD: ${{secrets.SIGNING_PASSWORD}}
+          SONATYPE_USERNAME: ${{secrets.SONATYPE_USERNAME}}
+          SONATYPE_PASSWORD: ${{secrets.SONATYPE_PASSWORD}}
+          KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
