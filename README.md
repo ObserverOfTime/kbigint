@@ -2,6 +2,18 @@
 
 Kotlin Multiplatform BigInteger library.
 
+<div style="margin-top:16px">
+  <a href="https://github.com/ObserverOfTime/kbigint/actions/workflows/ci.yml" style="border-bottom:unset">
+    <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/ObserverOfTime/kbigint/ci.yml?logo=github&label=CI"/>
+  </a>
+  <a href="https://observeroftime.github.io/kbigint/" style="border-bottom:unset">
+    <img alt="Pages" src="https://img.shields.io/github/deployments/ObserverOfTime/kbigint/github-pages?logo=kotlin&label=Documentation"/>
+  </a>
+  <a href="https://central.sonatype.com/artifact/io.github.observeroftime.kbigint/kbigint" style="border-bottom:unset">
+    <img alt="Central" src="https://img.shields.io/maven-central/v/io.github.observeroftime.kbigint/kbigint?logo=sonatype&label=Maven%20Central"/>
+  </a>
+</div>
+
 ## Platforms
 
 | Platform |          Implementation          |

@@ -8,14 +8,10 @@ concurrency:
   cancel-in-progress: true
   group: ${{github.workflow}}-${{github.ref_name}}
 
-permissions:
-  packages: write
-  contents: read
-
 jobs:
-  gpr:
+  build:
     runs-on: ${{matrix.os}}
-    name: Publish ${{matrix.platform}} packages on GPR
+    name: Build ${{matrix.platform}} packages
     strategy:
       fail-fast: false
       matrix:
@@ -23,31 +19,31 @@ jobs:
           - os: ubuntu-latest
             platform: common
             targets: >-
-              :kbigint:publishKotlinMultiplatformPublicationToGitHubRepository
-              :kbigint-serialization:publishKotlinMultiplatformPublicationToGitHubRepository
+              :kbigint:publishKotlinMultiplatformPublicationToLocalRepository
+              :kbigint-serialization:publishKotlinMultiplatformPublicationToLocalRepository
           - os: ubuntu-latest
             platform: JVM
-            targets: :kbigint:publishJvmPublicationToGitHubRepository
+            targets: :kbigint:publishJvmPublicationToLocalRepository
           - os: ubuntu-latest
             platform: Android
-            targets: :kbigint:publishAndroidReleasePublicationToGitHubRepository
+            targets: :kbigint:publishAndroidReleasePublicationToLocalRepository
           - os: ubuntu-latest
             platform: JS
-            target: :kbigint:publishJsPublicationToGitHubRepository
+            targets: :kbigint:publishJsPublicationToLocalRepository
           - os: ubuntu-latest
             platform: Linux
             targets: >-
-              :kbigint:publishLinuxX64PublicationToGitHubRepository
-              :kbigint:publishLinuxArm64PublicationToGitHubRepository
+              :kbigint:publishLinuxX64PublicationToLocalRepository
+              :kbigint:publishLinuxArm64PublicationToLocalRepository
           - os: windows-latest
             platform: Windows
-            targets: :kbigint:publishMingwX64PublicationToGitHubRepository
+            targets: :kbigint:publishMingwX64PublicationToLocalRepository
           - os: macos-14
             platform: macOS/iOS
             targets: >-
-              :kbigint:publishMacosX64PublicationToGitHubRepository
-              :kbigint:publishMacosArm64PublicationToGitHubRepository
-              :kbigint:publishIosArm64PublicationToGitHubRepository
+              :kbigint:publishMacosX64PublicationToLocalRepository
+              :kbigint:publishMacosArm64PublicationToLocalRepository
+              :kbigint:publishIosArm64PublicationToLocalRepository
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -83,91 +79,51 @@ jobs:
         with:
           path: ${{runner.tool_cache}}/konan/dependencies
           key: konan-${{runner.os}}-dependencies
-      - name: Publish packages
-        run: ./gradlew --no-daemon --info ${{matrix.targets}}
+      - name: Build packages
+        run: ./gradlew --no-daemon ${{matrix.targets}}
         env:
-          GITHUB_TOKEN: ${{github.token}}
           SIGNING_KEY: ${{secrets.SIGNING_KEY}}
           SIGNING_PASSWORD: ${{secrets.SIGNING_PASSWORD}}
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
-  central:
-    runs-on: ${{matrix.os}}
-    name: Publish ${{matrix.platform}} packages on Maven Central
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kbigint-${{matrix.platform == 'macOS/iOS' && 'macOS-iOS' || matrix.platform}}
+          path: |
+            build/repo/**
+            !build/repo/**/maven-metadata.*
+          retention-days: 2
+  publish:
+    runs-on: ubuntu-latest
+    name: Publish packages on Maven Central
+    needs: [build]
     environment:
       name: sonatype
-      url: https://central.sonatype.com/artifact/io.github.observeroftime/kbigint
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            platform: common
-            targets: >-
-              :kbigint:publishKotlinMultiplatformPublicationToSonatypeRepository
-              :kbigint-serialization:publishKotlinMultiplatformPublicationToSonatypeRepository
-          - os: ubuntu-latest
-            platform: JVM
-            targets: :kbigint:publishJvmPublicationToSonatypeRepository
-          - os: ubuntu-latest
-            platform: Android
-            targets: :kbigint:publishAndroidReleasePublicationToSonatypeRepository
-          - os: ubuntu-latest
-            platform: JS
-            target: :kbigint:publishJsPublicationToSonatypeRepository
-          - os: ubuntu-latest
-            platform: Linux
-            targets: >-
-              :kbigint:publishLinuxX64PublicationToSonatypeRepository
-              :kbigint:publishLinuxArm64PublicationToSonatypeRepository
-          - os: windows-latest
-            platform: Windows
-            targets: :kbigint:publishMingwX64PublicationToSonatypeRepository
-          - os: macos-14
-            platform: macOS/iOS
-            targets: >-
-              :kbigint:publishMacosX64PublicationToSonatypeRepository
-              :kbigint:publishMacosArm64PublicationToSonatypeRepository
-              :kbigint:publishIosArm64PublicationToSonatypeRepository
+      url: https://central.sonatype.com/artifact/io.github.observeroftime.kbigint/kbigint
+    env:
+      SONATYPE_API: https://central.sonatype.com/api/v1/publisher
+      SONATYPE_AUTH: "Authorization: Bearer ${{secrets.SONATYPE_TOKEN}}"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
         with:
-          submodules: true
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
-          cache-dependency-path: |
-            gradle/libs.versions.toml
-            gradle/wrapper/gradle-wrapper.properties
-      - name: Set up cross compilation
-        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
-        if: matrix.platform == 'Linux' || matrix.platform == 'common'
-      - name: Get the cache versions
-        id: versions
-        shell: sh
+          path: kbigint
+          pattern: kbigint-*
+          merge-multiple: true
+      - name: Upload bundle
         run: |-
-          {
-            sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/kotlin=\1.\2.\3/p' gradle/libs.versions.toml
-          } >> "$GITHUB_OUTPUT"
-      - name: Restore Kotlin/Native prebuilt
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
-          key: konan-${{runner.os}}-prebuilt-${{steps.versions.outputs.kotlin}}
-      - name: Restore Kotlin/Native dependencies
-        uses: actions/cache/restore@v4
-        if: matrix.platform != 'JVM' && matrix.platform != 'Android' && matrix.platform != 'JS'
-        with:
-          path: ${{runner.tool_cache}}/konan/dependencies
-          key: konan-${{runner.os}}-dependencies
-      - name: Publish packages
-        run: ./gradlew --no-daemon --info ${{matrix.targets}}
-        env:
-          SIGNING_KEY: ${{secrets.SIGNING_KEY}}
-          SIGNING_PASSWORD: ${{secrets.SIGNING_PASSWORD}}
-          SONATYPE_USERNAME: ${{secrets.SONATYPE_USERNAME}}
-          SONATYPE_PASSWORD: ${{secrets.SONATYPE_PASSWORD}}
-          KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
+          url="$SONATYPE_API/upload?publishingType=USER_MANAGED"
+          (cd kbigint && zip -qr ../kbigint.zip *)
+          printf >> "$GITHUB_ENV" 'DEPLOYMENT_ID=%s\n' $(curl -Ssf -Fbundle=@kbigint.zip -H "$SONATYPE_AUTH" "$url")
+      - name: Verify status
+        run: |-
+          url="$SONATYPE_API/status?id=$DEPLOYMENT_ID"
+          while [[ ${state:=PENDING} == PENDING ]] || [[ $state == VALIDATING ]]; do
+            state=$(curl -Ssf -XPOST -H "$SONATYPE_AUTH" "$url"  | jq -r .deploymentState)
+          done
+          if [[ $state == FAILED ]]; then
+            printf '::error title=Publication failed::Check https://central.sonatype.com/publishing/deployments\n'
+            exit 1
+          fi
+      - name: Publish deployment
+        run: curl -fi -XPOST -H "$SONATYPE_AUTH" "$SONATYPE_API/deployment/$DEPLOYMENT_ID"

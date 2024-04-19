@@ -19,6 +19,7 @@ kotlin {
     jvm()
 
     androidTarget {
+        withSourcesJar(true)
         publishLibraryVariants("release")
     }
 
@@ -311,17 +312,20 @@ tasks.dokkaHtmlPartial {
     }
 }
 
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    mustRunAfter(tasks.withType<Sign>())
+}
+
 tasks.create<Jar>("javadocJar") {
     group = "documentation"
-    dependsOn(tasks.dokkaHtml)
+    group = "documentation"
     archiveClassifier.set("javadoc")
-    from(tasks.dokkaHtml.get().outputDirectory)
+    from(files("README.md"))
 }
 
 publishing {
     publications.withType(MavenPublication::class) {
-        if (System.getenv("SONATYPE_USERNAME") != null)
-            artifact(tasks["javadocJar"])
+        artifact(tasks["javadocJar"])
         pom {
             name.set("KBigInt")
             description.set("Kotlin Multiplatform BigInteger library")
@@ -364,17 +368,8 @@ publishing {
         }
 
         maven {
-            name = "Sonatype"
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = System.getenv("SONATYPE_USERNAME")
-                password = System.getenv("SONATYPE_PASSWORD")
-            }
-        }
-
-        maven {
             name = "local"
-            url = uri(rootProject.layout.buildDirectory.dir("repos"))
+            url = uri(rootProject.layout.buildDirectory.dir("repo"))
         }
     }
 }

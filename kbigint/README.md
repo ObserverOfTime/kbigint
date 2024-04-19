@@ -4,8 +4,6 @@ Kotlin Multiplatform BigInteger library.
 
 ## Add the dependency
 
-Add these to `build.gradle.kts`:
-
 ```kotlin
 dependencies {
     implementation("io.github.observeroftime.kbigint:kbigint")
