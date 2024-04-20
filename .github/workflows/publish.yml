@@ -18,32 +18,30 @@ jobs:
         include:
           - os: ubuntu-latest
             platform: common
-            targets: >-
-              :kbigint:publishKotlinMultiplatformPublicationToLocalRepository
-              :kbigint-serialization:publishKotlinMultiplatformPublicationToLocalRepository
+            targets: publishKotlinMultiplatformPublicationToLocalRepository
           - os: ubuntu-latest
             platform: JVM
-            targets: :kbigint:publishJvmPublicationToLocalRepository
+            targets: publishJvmPublicationToLocalRepository
           - os: ubuntu-latest
             platform: Android
-            targets: :kbigint:publishAndroidReleasePublicationToLocalRepository
+            targets: publishAndroidReleasePublicationToLocalRepository
           - os: ubuntu-latest
             platform: JS
-            targets: :kbigint:publishJsPublicationToLocalRepository
+            targets: publishJsPublicationToLocalRepository
           - os: ubuntu-latest
             platform: Linux
             targets: >-
-              :kbigint:publishLinuxX64PublicationToLocalRepository
-              :kbigint:publishLinuxArm64PublicationToLocalRepository
+              publishLinuxX64PublicationToLocalRepository
+              publishLinuxArm64PublicationToLocalRepository
           - os: windows-latest
             platform: Windows
             targets: :kbigint:publishMingwX64PublicationToLocalRepository
           - os: macos-14
             platform: macOS/iOS
             targets: >-
-              :kbigint:publishMacosX64PublicationToLocalRepository
-              :kbigint:publishMacosArm64PublicationToLocalRepository
-              :kbigint:publishIosArm64PublicationToLocalRepository
+              publishMacosX64PublicationToLocalRepository
+              publishMacosArm64PublicationToLocalRepository
+              publishIosArm64PublicationToLocalRepository
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

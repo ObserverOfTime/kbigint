@@ -129,6 +129,10 @@ tasks.dokkaHtmlPartial {
     }
 }
 
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    mustRunAfter(tasks.withType<Sign>())
+}
+
 tasks.create<Jar>("javadocJar") {
     group = "documentation"
     archiveClassifier.set("javadoc")
