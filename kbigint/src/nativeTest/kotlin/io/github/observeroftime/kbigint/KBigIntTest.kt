@@ -28,6 +28,19 @@ actual class KBigIntTest {
     }
 
     @Test
+    @Suppress("ktlint:standard:statement-wrapping")
+    fun testAssign() {
+        val a = KBigInt(4)
+        val b = KBigInt(3)
+
+        assertEquals(KBigInt(7), run { a += b; a })
+        assertEquals(KBigInt(4), run { a -= b; a })
+        assertEquals(KBigInt(12), run { a *= b; a })
+        assertEquals(KBigInt(4), run { a /= b; a })
+        assertEquals(KBigInt(1), run { a %= b; a })
+    }
+
+    @Test
     actual fun testIncDec() {
         var a = KBigInt(2)
         assertEquals(KBigInt(3), ++a)

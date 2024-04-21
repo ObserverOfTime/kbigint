@@ -69,6 +69,17 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Add two [KBigInt] values.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @ObjCName("addInPlace")
+    @Throws(IllegalStateException::class)
+    operator fun plusAssign(other: KBigInt) {
+        mp_add(value.ptr, other.value.ptr, value.ptr).check()
+    }
+
+    /**
      * Subtract two [KBigInt] values.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -79,6 +90,17 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         val result = alloc<mp_int>()
         mp_sub(value.ptr, other.value.ptr, result.ptr).check()
         KBigInt(result.ptr)
+    }
+
+    /**
+     * Subtract two [KBigInt] values.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @ObjCName("subtractInPlace")
+    @Throws(IllegalStateException::class)
+    operator fun minusAssign(other: KBigInt) {
+        mp_sub(value.ptr, other.value.ptr, value.ptr).check()
     }
 
     /**
@@ -95,6 +117,17 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Multiply two [KBigInt] values.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @ObjCName("multiplyInPlace")
+    @Throws(IllegalStateException::class)
+    operator fun timesAssign(other: KBigInt) {
+        mp_mul(value.ptr, other.value.ptr, value.ptr).check()
+    }
+
+    /**
      * Divide two [KBigInt] values.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -108,6 +141,17 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Divide two [KBigInt] values.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @ObjCName("divideInPlace")
+    @Throws(IllegalStateException::class)
+    operator fun divAssign(other: KBigInt) {
+        mp_div(value.ptr, other.value.ptr, value.ptr, null).check()
+    }
+
+    /**
      * Calculate the remainder of the division.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -118,6 +162,17 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         val result = alloc<mp_int>()
         mp_div(value.ptr, other.value.ptr, null, result.ptr).check()
         KBigInt(result.ptr)
+    }
+
+    /**
+     * Calculate the remainder of the division.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @ObjCName("remainderInPlace")
+    @Throws(IllegalStateException::class)
+    operator fun remAssign(other: KBigInt) {
+        mp_div(value.ptr, other.value.ptr, null, value.ptr).check()
     }
 
     /**
