@@ -6,7 +6,7 @@ import android.annotation.TargetApi
 import android.os.Build.VERSION_CODES
 import java.math.BigInteger
 
-actual class KBigInt private constructor(private var value: BigInteger) : Comparable<KBigInt>, Number() {
+actual class KBigInt private constructor(private var value: BigInteger) : Comparable<KBigInt> {
     actual constructor(number: String) : this(BigInteger(number))
 
     actual constructor(number: Int) : this(number.toBigInteger())
@@ -93,17 +93,26 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     actual override fun toString() = value.toString()
 
-    override fun toByte() = value.toByte()
+    /**
+     * Convert the value to an [Int].
+     *
+     * @see [BigInteger.toInt]
+     */
+    fun toInt() = value.toInt()
 
-    override fun toDouble() = value.toDouble()
+    /**
+     * Convert the value to a [Long].
+     *
+     * @see [BigInteger.toLong]
+     */
+    fun toLong() = value.toLong()
 
-    override fun toFloat() = value.toFloat()
-
-    override fun toInt() = value.toInt()
-
-    override fun toLong() = value.toLong()
-
-    override fun toShort() = value.toShort()
+    /**
+     * Convert the value to a [Double].
+     *
+     * @see [BigInteger.toDouble]
+     */
+    fun toDouble() = value.toDouble()
 
     /** Convert the value to a [ByteArray]. */
     @Suppress("unused")

@@ -4,7 +4,7 @@ package io.github.observeroftime.kbigint
 
 import java.math.BigInteger
 
-actual class KBigInt private constructor(private var value: BigInteger) : Comparable<KBigInt>, Number() {
+actual class KBigInt private constructor(private var value: BigInteger) : Comparable<KBigInt> {
     actual constructor(number: String) : this(BigInteger(number))
 
     actual constructor(number: Int) : this(number.toBigInteger())
@@ -89,26 +89,13 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     actual override fun toString() = value.toString()
 
     /**
-     * Convert the value to a [Byte].
-     *
-     * @throws [ArithmeticException] if the value does not fit in [Byte]
-     * @see [BigInteger.byteValueExact]
-     */
-    @Throws(ArithmeticException::class)
-    override fun toByte() = value.byteValueExact()
-
-    override fun toDouble() = value.toDouble()
-
-    override fun toFloat() = value.toFloat()
-
-    /**
      * Convert the value to an [Int].
      *
      * @throws [ArithmeticException] if the value does not fit in [Int]
      * @see [BigInteger.intValueExact]
      */
     @Throws(ArithmeticException::class)
-    override fun toInt() = value.intValueExact()
+    fun toInt() = value.intValueExact()
 
     /**
      * Convert the value to a [Long].
@@ -117,16 +104,14 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      * @see [BigInteger.longValueExact]
      */
     @Throws(ArithmeticException::class)
-    override fun toLong() = value.longValueExact()
+    fun toLong() = value.longValueExact()
 
     /**
-     * Convert the value to a [Short].
+     * Convert the value to a [Double].
      *
-     * @throws [ArithmeticException] if the value does not fit in [Short]
-     * @see [BigInteger.shortValueExact]
+     * @see [BigInteger.toDouble]
      */
-    @Throws(ArithmeticException::class)
-    override fun toShort() = value.shortValueExact()
+    fun toDouble() = value.toDouble()
 
     /**
      * Convert the value to a [ByteArray].

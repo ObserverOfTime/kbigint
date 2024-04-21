@@ -96,13 +96,9 @@ actual class KBigIntTest {
     }
 
     @Test
-    actual fun testToNumber() {
-        assertFailsWith(ArithmeticException::class) { long.toByte() }
-        assertFailsWith(ArithmeticException::class) { long.toShort() }
+    fun testToNumber() {
         assertFailsWith(ArithmeticException::class) { long.toInt() }
-
-        assertEquals(OVER_MAX_INT.toDouble(), long.toDouble())
-        assertEquals(OVER_MAX_INT.toFloat(), long.toFloat())
         assertEquals(OVER_MAX_INT, long.toLong())
+        assertEquals(OVER_MAX_INT.toDouble(), long.toDouble())
     }
 }

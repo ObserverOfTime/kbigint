@@ -8,7 +8,7 @@ import net.libtom.libtommath.*
 
 @ObjCName("KBigInt")
 @OptIn(ExperimentalForeignApi::class, ExperimentalObjCName::class)
-actual class KBigInt private constructor(private var value: mp_int) : Comparable<KBigInt>, Number() {
+actual class KBigInt private constructor(private var value: mp_int) : Comparable<KBigInt> {
     private constructor() : this(nativeHeap.alloc<mp_int>())
 
     @Suppress("unused")
@@ -346,17 +346,14 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         return string
     }
 
-    override fun toByte() = kbi_mp_get_byte(value.ptr)
+    /** Convert the value to an [Int]. */
+    fun toInt() = mp_get_i32(value.ptr)
 
-    override fun toDouble() = mp_get_double(value.ptr)
+    /** Convert the value to a [Long]. */
+    fun toLong() = mp_get_i64(value.ptr)
 
-    override fun toFloat() = kbi_mp_get_float(value.ptr)
-
-    override fun toInt() = mp_get_i32(value.ptr)
-
-    override fun toLong() = mp_get_i64(value.ptr)
-
-    override fun toShort() = kbi_mp_get_short(value.ptr)
+    /** Convert the value to a [Double]. */
+    fun toDouble() = mp_get_double(value.ptr)
 
     private inline fun dispose(value: mp_int) {
         mp_clear(value.ptr)

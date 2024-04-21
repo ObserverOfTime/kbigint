@@ -18,5 +18,4 @@ expect class KBigIntTest {
     fun testEquals()
     fun testHashCode()
     fun testToString()
-    fun testToNumber()
 }

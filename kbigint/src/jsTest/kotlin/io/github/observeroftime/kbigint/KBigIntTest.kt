@@ -99,13 +99,8 @@ actual class KBigIntTest {
     }
 
     @Test
-    actual fun testToNumber() {
-        assertFailsWith(NumberFormatException::class) { long.toByte() }
-        assertFailsWith(NumberFormatException::class) { long.toShort() }
+    fun testToNumber() {
         assertFailsWith(NumberFormatException::class) { long.toInt() }
-
         assertEquals(OVER_MAX_INT.toDouble(), long.toDouble())
-        assertEquals(OVER_MAX_INT.toFloat(), long.toFloat())
-        assertEquals(OVER_MAX_INT, long.toLong())
     }
 }

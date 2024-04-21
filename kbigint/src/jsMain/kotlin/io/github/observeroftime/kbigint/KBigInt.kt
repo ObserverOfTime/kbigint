@@ -3,9 +3,7 @@ package io.github.observeroftime.kbigint
 @JsExport
 @Suppress("UNUSED_VARIABLE")
 @OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
-actual class KBigInt private constructor(
-    @JsExternalArgument private var value: BigInt
-) : Comparable<KBigInt>, Number() {
+actual class KBigInt private constructor(@JsExternalArgument private var value: BigInt) : Comparable<KBigInt> {
     @JsName("fromString")
     actual constructor(number: String) : this(BigInt(number))
 
@@ -141,37 +139,14 @@ actual class KBigInt private constructor(
     actual override fun hashCode() = toString().hashCode()
 
     /**
-     * Convert the value to a [Byte].
-     *
-     * @throws [NumberFormatException] if the value does not fit in [Byte]
-     */
-    override fun toByte() = toString().toByte()
-
-    override fun toDouble() = toString().toDouble()
-
-    override fun toFloat() = toString().toFloat()
-
-    /**
      * Convert the value to an [Int].
      *
      * @throws [NumberFormatException] if the value does not fit in [Int]
      */
-    override fun toInt() = toString().toInt()
+    fun toInt() = toString().toInt()
 
-    /**
-     * Convert the value to a [Long].
-     *
-     * @throws [NumberFormatException] if the value does not fit in [Long]
-     */
-    @Suppress("NON_EXPORTABLE_TYPE")
-    override fun toLong() = toString().toLong()
-
-    /**
-     * Convert the value to a [Short].
-     *
-     * @throws [NumberFormatException] if the value does not fit in [Short]
-     */
-    override fun toShort() = toString().toShort()
+    /** Convert the value to a [Double]. */
+    fun toDouble() = toString().toDouble()
 
     actual override fun toString() = value.toString()
 }

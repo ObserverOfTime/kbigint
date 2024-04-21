@@ -58,15 +58,3 @@ static inline int kbi_mp_sign(mp_int *a) {
 static inline mp_err kbi_mp_pow(mp_int *a, int n, mp_int *b) {
     return n == 2 ? mp_sqr(a, b) : mp_expt_n(a, n, b);
 }
-
-static inline char kbi_mp_get_byte(mp_int *a) {
-    return (char) mp_get_i32(a);
-}
-
-static inline short kbi_mp_get_short(mp_int *a) {
-    return (short) mp_get_i32(a);
-}
-
-static inline float kbi_mp_get_float(mp_int *a) {
-    return (float) mp_get_double(a);
-}

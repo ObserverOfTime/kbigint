@@ -96,12 +96,9 @@ actual class KBigIntTest {
     }
 
     @Test
-    actual fun testToNumber() {
-        assertEquals(OVER_MAX_INT.toByte(), long.toByte())
-        assertEquals(OVER_MAX_INT.toDouble(), long.toDouble())
-        assertEquals(OVER_MAX_INT.toFloat(), long.toFloat())
+    fun testToNumber() {
         assertEquals(OVER_MAX_INT.toInt(), long.toInt())
         assertEquals(OVER_MAX_INT, long.toLong())
-        assertEquals(OVER_MAX_INT.toShort(), long.toShort())
+        assertEquals(OVER_MAX_INT.toDouble(), long.toDouble())
     }
 }
