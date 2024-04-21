@@ -46,6 +46,7 @@ excludedFunctions = \
     mp_read_signed_bin \
     mp_to_signed_bin \
     mp_to_signed_bin_n \
+    mp_toradix \
     mp_toradix_n
 
 ---

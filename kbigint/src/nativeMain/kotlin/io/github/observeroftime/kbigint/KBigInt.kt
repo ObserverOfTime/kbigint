@@ -335,12 +335,15 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
 
     actual override fun hashCode() = toString().hashCode()
 
-    actual override fun toString() = Arena().run {
-        val result = alloc<ByteVar>()
-        val size = alloc<ULongVar>()
-        mp_radix_size(value.ptr, 10, size.ptr.reinterpret()).check()
-        mp_to_radix(value.ptr, result.ptr, size.value, null, 10).check()
-        result.ptr.toKString()
+    actual override fun toString(): String {
+        val arena = Arena()
+        val size = arena.alloc<IntVar>()
+        mp_radix_size(value.ptr, 10, size.ptr).check()
+        val result = arena.allocArray<ByteVar>(size.value)
+        mp_to_radix(value.ptr, result, size.value.toULong(), null, 10).check()
+        val string = result.toKString()
+        arena.clear()
+        return string
     }
 
     override fun toByte() = kbi_mp_get_byte(value.ptr)
