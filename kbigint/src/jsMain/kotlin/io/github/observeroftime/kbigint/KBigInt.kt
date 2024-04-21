@@ -12,10 +12,6 @@ actual class KBigInt private constructor(
     @JsName("fromNumber")
     actual constructor(number: Int) : this(BigInt(number))
 
-    @JsName("_fromLong")
-    @Suppress("NON_EXPORTABLE_TYPE")
-    actual constructor(number: Long) : this(BigInt(number))
-
     actual val sign: Int
         get() = KBigIntUtils.sign(value)
 

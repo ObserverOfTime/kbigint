@@ -8,9 +8,6 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Convert an [Int] to a [KBigInt]. */
     constructor(number: Int)
 
-    /** Convert a [Long] to a [KBigInt]. */
-    constructor(number: Long)
-
     /**
      * The sign of the value:
      *
