@@ -2,13 +2,12 @@ package io.github.observeroftime.kbigint
 
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.experimental.ExperimentalObjCName
-import kotlin.experimental.ExperimentalObjCRefinement
 import kotlin.native.ref.createCleaner
 import kotlinx.cinterop.*
 import net.libtom.libtommath.*
 
 @ObjCName("KBigInt")
-@OptIn(ExperimentalForeignApi::class, ExperimentalObjCName::class, ExperimentalObjCRefinement::class)
+@OptIn(ExperimentalForeignApi::class, ExperimentalObjCName::class)
 actual class KBigInt private constructor(private var value: mp_int) : Comparable<KBigInt>, Number() {
     private constructor() : this(nativeHeap.alloc<mp_int>())
 
@@ -70,19 +69,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
-     * Add two [KBigInt] values.
-     *
-     * @throws [IllegalStateException] if the operation fails
-     */
-    @HiddenFromObjC
-    @Throws(IllegalStateException::class)
-    actual operator fun plusAssign(other: KBigInt) = memScoped {
-        val result = alloc<mp_int>()
-        mp_add(value.ptr, other.value.ptr, result.ptr).check()
-        mp_exch(value.ptr, result.ptr)
-    }
-
-    /**
      * Subtract two [KBigInt] values.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -93,19 +79,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         val result = alloc<mp_int>()
         mp_sub(value.ptr, other.value.ptr, result.ptr).check()
         KBigInt(result.ptr)
-    }
-
-    /**
-     * Subtract two [KBigInt] values.
-     *
-     * @throws [IllegalStateException] if the operation fails
-     */
-    @HiddenFromObjC
-    @Throws(IllegalStateException::class)
-    actual operator fun minusAssign(other: KBigInt) = memScoped {
-        val result = alloc<mp_int>()
-        mp_sub(value.ptr, other.value.ptr, result.ptr).check()
-        mp_exch(value.ptr, result.ptr)
     }
 
     /**
@@ -122,19 +95,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
-     * Multiply two [KBigInt] values.
-     *
-     * @throws [IllegalStateException] if the operation fails
-     */
-    @HiddenFromObjC
-    @Throws(IllegalStateException::class)
-    actual operator fun timesAssign(other: KBigInt) = memScoped {
-        val result = alloc<mp_int>()
-        mp_mul(value.ptr, other.value.ptr, result.ptr).check()
-        mp_exch(value.ptr, result.ptr)
-    }
-
-    /**
      * Divide two [KBigInt] values.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -148,19 +108,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
-     * Divide two [KBigInt] values.
-     *
-     * @throws [IllegalStateException] if the operation fails
-     */
-    @HiddenFromObjC
-    @Throws(IllegalStateException::class)
-    actual operator fun divAssign(other: KBigInt) = memScoped {
-        val result = alloc<mp_int>()
-        mp_div(value.ptr, other.value.ptr, result.ptr, null).check()
-        mp_exch(value.ptr, result.ptr)
-    }
-
-    /**
      * Calculate the remainder of the division.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -171,19 +118,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         val result = alloc<mp_int>()
         mp_div(value.ptr, other.value.ptr, null, result.ptr).check()
         KBigInt(result.ptr)
-    }
-
-    /**
-     * Calculate the remainder of the division.
-     *
-     * @throws [IllegalStateException] if the operation fails
-     */
-    @HiddenFromObjC
-    @Throws(IllegalStateException::class)
-    actual operator fun remAssign(other: KBigInt) = memScoped {
-        val result = alloc<mp_int>()
-        mp_div(value.ptr, other.value.ptr, null, result.ptr).check()
-        mp_exch(value.ptr, result.ptr)
     }
 
     /**

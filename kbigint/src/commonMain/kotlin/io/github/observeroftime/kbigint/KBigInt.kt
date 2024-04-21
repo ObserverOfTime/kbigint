@@ -23,32 +23,17 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Add two [KBigInt] values. */
     operator fun plus(other: KBigInt): KBigInt
 
-    /** Add two [KBigInt] values. */
-    operator fun plusAssign(other: KBigInt)
-
     /** Subtract two [KBigInt] values. */
     operator fun minus(other: KBigInt): KBigInt
-
-    /** Subtract two [KBigInt] values. */
-    operator fun minusAssign(other: KBigInt)
 
     /** Multiply two [KBigInt] values. */
     operator fun times(other: KBigInt): KBigInt
 
-    /** Multiply two [KBigInt] values. */
-    operator fun timesAssign(other: KBigInt)
-
     /** Divide two [KBigInt] values. */
     operator fun div(other: KBigInt): KBigInt
 
-    /** Divide two [KBigInt] values. */
-    operator fun divAssign(other: KBigInt)
-
     /** Calculate the remainder of the division. */
     operator fun rem(other: KBigInt): KBigInt
-
-    /** Calculate the remainder of the division. */
-    operator fun remAssign(other: KBigInt)
 
     /** Increment the value. */
     operator fun inc(): KBigInt

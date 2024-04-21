@@ -26,23 +26,11 @@ actual class KBigInt private constructor(
         return KBigInt(js("a + b").unsafeCast<BigInt>())
     }
 
-    actual operator fun plusAssign(other: KBigInt) {
-        val a = this.value
-        val b = other.value
-        value = js("a + b").unsafeCast<BigInt>()
-    }
-
     @JsName("subtract")
     actual operator fun minus(other: KBigInt): KBigInt {
         val a = this.value
         val b = other.value
         return KBigInt(js("a - b").unsafeCast<BigInt>())
-    }
-
-    actual operator fun minusAssign(other: KBigInt) {
-        val a = this.value
-        val b = other.value
-        value = js("a - b").unsafeCast<BigInt>()
     }
 
     @JsName("multiply")
@@ -52,12 +40,6 @@ actual class KBigInt private constructor(
         return KBigInt(js("a * b").unsafeCast<BigInt>())
     }
 
-    actual operator fun timesAssign(other: KBigInt) {
-        val a = this.value
-        val b = other.value
-        value = js("a * b").unsafeCast<BigInt>()
-    }
-
     @JsName("divide")
     actual operator fun div(other: KBigInt): KBigInt {
         val a = this.value
@@ -65,23 +47,11 @@ actual class KBigInt private constructor(
         return KBigInt(js("a / b").unsafeCast<BigInt>())
     }
 
-    actual operator fun divAssign(other: KBigInt) {
-        val a = this.value
-        val b = other.value
-        value = js("a / b").unsafeCast<BigInt>()
-    }
-
     @JsName("remainder")
     actual operator fun rem(other: KBigInt): KBigInt {
         val a = this.value
         val b = other.value
         return KBigInt(js("a % b").unsafeCast<BigInt>())
-    }
-
-    actual operator fun remAssign(other: KBigInt) {
-        val a = this.value
-        val b = other.value
-        value = js("a % b").unsafeCast<BigInt>()
     }
 
     @JsName("increment")

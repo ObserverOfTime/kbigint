@@ -25,18 +25,6 @@ actual class KBigIntTest {
     }
 
     @Test
-    actual fun testAssign() {
-        val a = KBigInt(4)
-        val b = KBigInt(3)
-
-        assertEquals(KBigInt(7), a.also { it += b })
-        assertEquals(KBigInt(4), a.also { it -= b })
-        assertEquals(KBigInt(12), a.also { it *= b })
-        assertEquals(KBigInt(4), a.also { it /= b })
-        assertEquals(KBigInt(1), a.also { it %= b })
-    }
-
-    @Test
     actual fun testIncDec() {
         var a = KBigInt(2)
         assertEquals(KBigInt(3), ++a)

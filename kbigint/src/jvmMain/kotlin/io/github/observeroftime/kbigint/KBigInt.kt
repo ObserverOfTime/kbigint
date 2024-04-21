@@ -22,42 +22,17 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     @JvmName("add")
     actual operator fun plus(other: KBigInt) = KBigInt(value + other.value)
 
-    @JvmSynthetic
-    actual operator fun plusAssign(other: KBigInt) {
-        value += other.value
-    }
-
     @JvmName("subtract")
     actual operator fun minus(other: KBigInt) = KBigInt(value - other.value)
-
-    @JvmSynthetic
-    actual operator fun minusAssign(other: KBigInt) {
-        value -= other.value
-    }
 
     @JvmName("multiply")
     actual operator fun times(other: KBigInt) = KBigInt(value * other.value)
 
-    @JvmSynthetic
-    actual operator fun timesAssign(other: KBigInt) {
-        value *= other.value
-    }
-
     @JvmName("divide")
     actual operator fun div(other: KBigInt) = KBigInt(value / other.value)
 
-    @JvmSynthetic
-    actual operator fun divAssign(other: KBigInt) {
-        value /= other.value
-    }
-
     @JvmName("remainder")
     actual operator fun rem(other: KBigInt) = KBigInt(value % other.value)
-
-    @JvmSynthetic
-    actual operator fun remAssign(other: KBigInt) {
-        value %= other.value
-    }
 
     @JvmName("increment")
     actual operator fun inc() = apply { ++value }
