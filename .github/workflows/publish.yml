@@ -126,3 +126,26 @@ jobs:
           fi
       - name: Publish deployment
         run: curl -fi -XPOST -H "$SONATYPE_AUTH" "$SONATYPE_API/deployment/$DEPLOYMENT_ID"
+  release:
+    runs-on: ubuntu-latest
+    name: Create GitHub release
+    needs: [publish]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v3
+        with:
+          args: -v --current
+          config: .github/cliff.toml
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+          GITHUB_REPO: ${{github.repository}}
+          OUTPUT: ${{runner.temp}}/changes.md
+      - name: Create release
+        run: gh release create $GITHUB_REF_NAME -F $RUNNER_TEMP/changes.md
+        env:
+          GH_TOKEN: ${{github.token}}
+

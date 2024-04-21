@@ -1,0 +1,53 @@
+[changelog]
+header = ""
+body = """
+## Core
+
+{% for commit in commits|filter(attribute="group", value = "core") %}
+  - {{ commit.message }}
+{% else %}
+  N/A
+{% endfor %}
+
+## Serialization
+
+{% for commit in commits|filter(attribute="group", value = "serialization") %}
+  - {{ commit.message }}
+{% else %}
+  N/A
+{% endfor %}
+
+## Misc
+
+{% for commit in commits|filter(attribute="group", value = "misc") %}
+  - {{ commit.message }}
+{% else %}
+  N/A
+{% endfor %}
+"""
+footer = ""
+trim = true
+postprocessors = [
+  { pattern = "\\(core\\)", replace = "" },
+  { pattern = "\\(serialization\\)", replace = "" },
+  { pattern = "- ([a-z()]+!?:)", replace = "- **$1**" }
+]
+
+[git]
+conventional_commits = false
+
+[[git.commit_parsers]]
+message = "^[a-z]+\\(core\\)!?:"
+group = "core"
+
+[[git.commit_parsers]]
+message = "^[a-z]+\\(serialization\\)!?:"
+group = "serialization"
+
+[[git.commit_parsers]]
+message = "^ci|^chore: release"
+skip = true
+
+[[git.commit_parsers]]
+message = ".+"
+group = "misc"
