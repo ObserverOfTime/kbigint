@@ -35,7 +35,7 @@ jobs:
               publishLinuxArm64PublicationToLocalRepository
           - os: windows-latest
             platform: Windows
-            targets: :kbigint:publishMingwX64PublicationToLocalRepository
+            targets: publishMingwX64PublicationToLocalRepository
           - os: macos-14
             platform: macOS/iOS
             targets: >-
@@ -110,10 +110,11 @@ jobs:
           merge-multiple: true
       - name: Upload bundle
         run: |-
-          url="$SONATYPE_API/upload?publishingType=USER_MANAGED"
+          url="$SONATYPE_API/upload?name=kbigint-${GITHUB_REF_NAME}.zip&publishingType=USER_MANAGED"
           (cd kbigint && zip -qr ../kbigint.zip *)
           printf >> "$GITHUB_ENV" 'DEPLOYMENT_ID=%s\n' $(curl -Ssf -Fbundle=@kbigint.zip -H "$SONATYPE_AUTH" "$url")
       - name: Verify status
+        timeout-minutes: 5
         run: |-
           url="$SONATYPE_API/status?id=$DEPLOYMENT_ID"
           while [[ ${state:=PENDING} == PENDING ]] || [[ $state == VALIDATING ]]; do

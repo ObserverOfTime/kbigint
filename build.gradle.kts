@@ -19,7 +19,7 @@ allprojects {
 
 subprojects {
     group = "io.github.observeroftime.kbigint"
-    version = "0.1.2"
+    version = "0.2.0"
 
     if (System.getenv("CI") != null) {
         tasks.withType(AbstractTestTask::class) {
