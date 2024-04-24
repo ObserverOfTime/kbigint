@@ -4,7 +4,7 @@ body = """
 ## Core
 
 {% for commit in commits|filter(attribute="group", value = "core") %}
-  - {{ commit.message }}
+  - {{ commit.message|split(pat="\n")|first }}
 {% else %}
   N/A
 {% endfor %}
@@ -12,7 +12,7 @@ body = """
 ## Serialization
 
 {% for commit in commits|filter(attribute="group", value = "serialization") %}
-  - {{ commit.message }}
+  - {{ commit.message|split(pat="\n")|first }}
 {% else %}
   N/A
 {% endfor %}
@@ -20,7 +20,7 @@ body = """
 ## Misc
 
 {% for commit in commits|filter(attribute="group", value = "misc") %}
-  - {{ commit.message }}
+  - {{ commit.message|split(pat="\n")|first }}
 {% else %}
   N/A
 {% endfor %}

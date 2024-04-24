@@ -21,6 +21,9 @@ out/
 !.idea/ktlint-plugin.xml
 !.idea/vcs.xml
 
+### git-cliff ###
+changes.md
+
 ### Vim ###
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]

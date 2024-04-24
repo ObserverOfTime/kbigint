@@ -137,15 +137,16 @@ jobs:
           fetch-depth: 0
       - name: Generate changelog
         uses: orhun/git-cliff-action@v3
+        id: cliff
         with:
           args: -v --current
           config: .github/cliff.toml
         env:
+          OUTPUT: changes.md
           GITHUB_TOKEN: ${{github.token}}
           GITHUB_REPO: ${{github.repository}}
-          OUTPUT: ${{runner.temp}}/changes.md
       - name: Create release
-        run: gh release create $GITHUB_REF_NAME -F $RUNNER_TEMP/changes.md
+        run: gh release create $GITHUB_REF_NAME -F '${{steps.cliff.outputs.changelog}}'
         env:
           GH_TOKEN: ${{github.token}}
 
