@@ -4,7 +4,7 @@ import kotlin.test.*
 
 actual class KBigIntTest {
     companion object {
-        private val long = KBigInt(OVER_MAX_INT.toString())
+        private val long = KBigInt(OVER_MAX_INT)
         private val string = KBigInt(OVER_MAX_LONG)
     }
 
@@ -20,7 +20,7 @@ actual class KBigIntTest {
         assertEquals(KBigInt("9223372039002259456"), string + long)
         assertEquals(KBigInt("9223372034707292160"), string - long)
         assertEquals(KBigInt("19807040628566084398385987584"), string * long)
-        assertEquals(KBigInt("4294967296"), string / long)
+        assertEquals(KBigInt(4294967296L), string / long)
         assertEquals(KBigInt(0), string % long)
     }
 
@@ -33,7 +33,7 @@ actual class KBigIntTest {
 
     @Test
     actual fun testNegate() {
-        assertEquals(KBigInt((-OVER_MAX_INT).toString()), -long)
+        assertEquals(KBigInt(-OVER_MAX_INT), -long)
     }
 
     @Test
@@ -45,13 +45,13 @@ actual class KBigIntTest {
 
     @Test
     actual fun testShifts() {
-        assertEquals(KBigInt("8589934592"), long shl 2)
-        assertEquals(KBigInt(1073741824), long shr 1)
+        assertEquals(KBigInt(8589934592L), long shl 2)
+        assertEquals(KBigInt(1073741824L), long shr 1)
     }
 
     @Test
     actual fun testInvert() {
-        assertEquals(KBigInt("-2147483649"), long.inv())
+        assertEquals(KBigInt(-2147483649L), long.inv())
     }
 
     @Test
@@ -85,7 +85,7 @@ actual class KBigIntTest {
     @Test
     actual fun testEquals() {
         assertFalse { long == string }
-        assertTrue { long == KBigInt(OVER_MAX_INT.toString()) }
+        assertTrue { long == KBigInt(OVER_MAX_INT) }
     }
 
     @Test

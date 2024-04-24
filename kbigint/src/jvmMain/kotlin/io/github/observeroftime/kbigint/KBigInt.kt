@@ -9,7 +9,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     actual constructor(number: Int) : this(number.toBigInteger())
 
-    constructor(number: Long) : this(number.toBigInteger())
+    actual constructor(number: Long) : this(number.toBigInteger())
 
     /** Convert a [ByteArray] to a [KBigInt]. */
     @Suppress("unused")

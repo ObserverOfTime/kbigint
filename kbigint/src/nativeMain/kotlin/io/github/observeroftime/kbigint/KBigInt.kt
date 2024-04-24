@@ -48,7 +48,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @Throws(IllegalStateException::class)
-    constructor(number: Long) : this() {
+    actual constructor(number: Long) : this() {
         mp_init_i64(value.ptr, number).check()
     }
 
