@@ -11,6 +11,9 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Convert a [Long] to a [KBigInt]. */
     constructor(number: Long)
 
+    /** Convert a [ByteArray] to a [KBigInt]. */
+    constructor(bytes: ByteArray)
+
     /**
      * The sign of the value:
      *
@@ -70,6 +73,9 @@ expect class KBigInt : Comparable<KBigInt> {
 
     /** Get the absolute value. */
     fun abs(): KBigInt
+
+    /** Convert the value to a [ByteArray]. */
+    fun toByteArray(): ByteArray
 
     override operator fun compareTo(other: KBigInt): Int
 

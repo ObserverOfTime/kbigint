@@ -14,6 +14,9 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
     @Suppress("NON_EXPORTABLE_TYPE")
     actual constructor(number: Long) : this(BigInt(number))
 
+    @JsName("fromBuffer")
+    actual constructor(bytes: ByteArray) : this(BigInt(KBigIntUtils.fromByteArray(bytes)))
+
     actual val sign: Int
         get() = KBigIntUtils.sign(value)
 
@@ -153,4 +156,6 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
     fun toDouble() = toString().toDouble()
 
     actual override fun toString() = value.toString()
+
+    actual fun toByteArray() = KBigIntUtils.toByteArray(value)
 }

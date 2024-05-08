@@ -12,8 +12,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     actual constructor(number: Long) : this(number.toBigInteger())
 
     /** Convert a [ByteArray] to a [KBigInt]. */
-    @Suppress("unused")
-    constructor(bytes: ByteArray) : this(BigInteger(bytes))
+    actual constructor(bytes: ByteArray) : this(BigInteger(bytes))
 
     @get:JvmName("signum")
     actual val sign: Int
@@ -118,6 +117,5 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      *
      * @see [BigInteger.toByteArray]
      */
-    @Suppress("unused")
-    fun toByteArray(): ByteArray = value.toByteArray()
+    actual fun toByteArray(): ByteArray = value.toByteArray()
 }

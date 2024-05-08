@@ -52,6 +52,7 @@ actual class KBigIntTest {
     @Test
     actual fun testInvert() {
         assertEquals(KBigInt(-2147483649L), long.inv())
+        assertEquals(KBigInt(2147483649L), -long.inv())
     }
 
     @Test
@@ -102,5 +103,14 @@ actual class KBigIntTest {
     fun testToNumber() {
         assertFailsWith(NumberFormatException::class) { long.toInt() }
         assertEquals(OVER_MAX_INT.toDouble(), long.toDouble())
+    }
+
+    @Test
+    actual fun testByteArray() {
+        assertContentEquals(byteArrayOf(4, 0, 2), KBigInt(262146).toByteArray())
+        assertContentEquals(byteArrayOf(-24, 123), KBigInt(-6021).toByteArray())
+
+        assertEquals(KBigInt(262146), KBigInt(byteArrayOf(4, 0, 2)))
+        assertEquals(KBigInt(-6021), KBigInt(byteArrayOf(-24, 123)))
     }
 }

@@ -12,4 +12,6 @@ internal external object KBigIntUtils {
     fun sign(value: BigInt): Int
     fun cmp(a: BigInt, b: BigInt): Int
     fun pow(value: BigInt, n: Int): BigInt
+    fun toByteArray(value: BigInt): ByteArray
+    fun fromByteArray(bytes: ByteArray): BigInt
 }

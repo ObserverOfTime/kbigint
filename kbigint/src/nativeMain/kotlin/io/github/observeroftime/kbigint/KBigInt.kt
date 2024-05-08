@@ -2,6 +2,7 @@ package io.github.observeroftime.kbigint
 
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.experimental.ExperimentalObjCName
+import kotlin.experimental.inv
 import kotlin.native.ref.createCleaner
 import kotlinx.cinterop.*
 import net.libtom.libtommath.*
@@ -50,6 +51,25 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     @Throws(IllegalStateException::class)
     actual constructor(number: Long) : this() {
         mp_init_i64(value.ptr, number).check()
+    }
+
+    /** Convert a [ByteArray] to a [KBigInt]. */
+    actual constructor(bytes: ByteArray) : this() {
+        val size = bytes.size + 1
+        val sign = if (bytes.any { it < 0 }) 1 else 0
+        // XXX: libtommath expects bytes in this format
+        val copy = ByteArray(size) {
+            when {
+                it == 0 -> sign.toByte()
+                sign == 0 -> bytes[it - 1]
+                bytes[it - 1] <= 0 -> bytes[it - 1].inv()
+                else -> bytes[it - 1].unaryMinus().toByte()
+            }
+        }
+        memScoped {
+            val array = allocArrayOf(copy).reinterpret<UByteVar>()
+            mp_from_sbin(value.ptr, array, size.toULong()).check()
+        }
     }
 
     actual val sign: Int
@@ -354,6 +374,23 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
 
     /** Convert the value to a [Double]. */
     fun toDouble() = mp_get_double(value.ptr)
+
+    /** Convert the value to a [ByteArray]. */
+    actual fun toByteArray(): ByteArray = memScoped {
+        val size = mp_sbin_size(value.ptr)
+        val array = allocArray<UByteVar>(size.toInt())
+        mp_to_sbin(value.ptr, array, size, null).check()
+        val sign = array[0].toInt()
+        ByteArray(size.toInt() - 1) {
+            val byte = array[it + 1].toByte()
+            when {
+                sign == 0 -> byte
+                byte > 0 -> byte.inv()
+                byte.toInt() == -1 -> 0
+                else -> byte.unaryMinus().toByte()
+            }
+        }
+    }
 
     private inline fun dispose(value: mp_int) {
         mp_clear(value.ptr)
