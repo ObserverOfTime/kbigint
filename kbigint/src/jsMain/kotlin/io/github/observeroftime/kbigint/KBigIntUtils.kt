@@ -1,6 +1,8 @@
 package io.github.observeroftime.kbigint
 
-internal external class BigInt
+internal external class BigInt {
+    fun toString(radix: Int): String
+}
 
 internal external fun BigInt(n: dynamic): BigInt
 

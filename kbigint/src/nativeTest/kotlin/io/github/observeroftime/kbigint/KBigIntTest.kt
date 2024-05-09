@@ -135,6 +135,7 @@ actual class KBigIntTest {
     @Test
     actual fun testToString() {
         assertEquals(OVER_MAX_LONG, string.toString())
+        assertEquals(OVER_MAX_INT.toString(2), long.toString(2))
     }
 
     @Test

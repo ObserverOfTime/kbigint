@@ -100,9 +100,11 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     actual override fun equals(other: Any?) = other is KBigInt && value == other.value
 
-    actual override fun hashCode() = toString().hashCode()
+    actual override fun hashCode(): Int = toString().hashCode()
 
-    actual override fun toString() = value.toString()
+    actual fun toString(radix: Int): String = value.toString(radix)
+
+    actual override fun toString(): String = value.toString()
 
     /**
      * Convert the value to an [Int].

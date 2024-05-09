@@ -89,5 +89,8 @@ expect class KBigInt : Comparable<KBigInt> {
 
     override fun hashCode(): Int
 
+    /** Convert the value to a [String] with the given [radix]. */
+    fun toString(radix: Int): String
+
     override fun toString(): String
 }

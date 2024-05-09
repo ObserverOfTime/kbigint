@@ -149,7 +149,12 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
 
     actual override fun equals(other: Any?) = other is KBigInt && value == other.value
 
-    actual override fun hashCode() = toString().hashCode()
+    actual override fun hashCode(): Int = toString().hashCode()
+
+    @JsName("toRadixString")
+    actual fun toString(radix: Int) = value.toString(radix)
+
+    actual override fun toString() = value.toString()
 
     /**
      * Convert the value to an [Int].
@@ -160,8 +165,6 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
 
     /** Convert the value to a [Double]. */
     fun toDouble() = toString().toDouble()
-
-    actual override fun toString() = value.toString()
 
     actual fun toByteArray() = KBigIntUtils.toByteArray(value)
 }

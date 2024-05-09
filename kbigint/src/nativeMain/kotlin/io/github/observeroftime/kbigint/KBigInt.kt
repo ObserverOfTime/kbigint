@@ -375,18 +375,20 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
 
     actual override fun equals(other: Any?) = other is KBigInt && mp_cmp(value.ptr, other.value.ptr) == 0
 
-    actual override fun hashCode() = toString().hashCode()
+    actual override fun hashCode(): Int = toString().hashCode()
 
-    actual override fun toString(): String {
+    actual fun toString(radix: Int): String {
         val arena = Arena()
         val size = arena.alloc<IntVar>()
-        mp_radix_size(value.ptr, 10, size.ptr).check()
+        mp_radix_size(value.ptr, radix, size.ptr).check()
         val result = arena.allocArray<ByteVar>(size.value)
-        mp_to_radix(value.ptr, result, size.value.toULong(), null, 10).check()
+        mp_to_radix(value.ptr, result, size.value.toULong(), null, radix).check()
         val string = result.toKString()
         arena.clear()
         return string
     }
+
+    actual override fun toString() = toString(10)
 
     /** Convert the value to an [Int]. */
     fun toInt() = mp_get_i32(value.ptr)
