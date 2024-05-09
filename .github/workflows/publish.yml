@@ -130,6 +130,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Create GitHub release
     needs: [publish]
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

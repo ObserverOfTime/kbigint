@@ -4,25 +4,19 @@ body = """
 ## Core
 
 {% for commit in commits|filter(attribute="group", value = "core") %}
-  - {{ commit.message|split(pat="\n")|first }}
-{% else %}
-  N/A
+- {{ commit.message|split(pat="\n")|first }} ({{ commit.id }}){% else %}N/A
 {% endfor %}
 
 ## Serialization
 
 {% for commit in commits|filter(attribute="group", value = "serialization") %}
-  - {{ commit.message|split(pat="\n")|first }}
-{% else %}
-  N/A
+- {{ commit.message|split(pat="\n")|first }} ({{ commit.id }}){% else %}N/A
 {% endfor %}
 
 ## Misc
 
 {% for commit in commits|filter(attribute="group", value = "misc") %}
-  - {{ commit.message|split(pat="\n")|first }}
-{% else %}
-  N/A
+- {{ commit.message|split(pat="\n")|first }} ({{ commit.id }}){% else %}N/A
 {% endfor %}
 """
 footer = ""
