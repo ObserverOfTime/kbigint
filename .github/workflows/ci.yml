@@ -7,15 +7,11 @@ on:
       - "**/*.kt"
       - "**/*.kts"
       - gradle/**
-      - gradle.properties
-      - .github/workflows/ci.yml
   pull_request:
     paths:
       - "**/*.kt"
       - "**/*.kts"
       - gradle/**
-      - gradle.properties
-      - .github/workflows/ci.yml
 
 concurrency:
   cancel-in-progress: true
