@@ -16,6 +16,26 @@ actual class KBigIntTest {
     }
 
     @Test
+    actual fun testBits() {
+        val a = KBigInt(1024)
+        val b = KBigInt(-1024)
+        val c = KBigInt(0)
+        val d = KBigInt(-1)
+
+        assertEquals(11, a.bitLength)
+        assertEquals(1, a.bitCount)
+
+        assertEquals(10, b.bitLength)
+        assertEquals(10, b.bitCount)
+
+        assertEquals(0, c.bitLength)
+        assertEquals(0, c.bitCount)
+
+        assertEquals(0, d.bitLength)
+        assertEquals(0, d.bitCount)
+    }
+
+    @Test
     actual fun testArithmetic() {
         assertEquals(KBigInt("9223372039002259456"), string + long)
         assertEquals(KBigInt("9223372034707292160"), string - long)

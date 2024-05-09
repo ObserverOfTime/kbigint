@@ -5,6 +5,7 @@ internal const val OVER_MAX_LONG = "9223372036854775808"
 
 expect class KBigIntTest {
     fun testSign()
+    fun testBits()
     fun testArithmetic()
     fun testIncDec()
     fun testNegate()

@@ -58,3 +58,14 @@ static inline int kbi_mp_sign(mp_int *a) {
 static inline mp_err kbi_mp_pow(mp_int *a, int n, mp_int *b) {
     return n == 2 ? mp_sqr(a, b) : mp_expt_n(a, n, b);
 }
+
+static inline int32_t kbi_mp_count_set_bits(mp_int *a) {
+   if (a->used == 0) return 0;
+
+   int bits = (a->used - 1) * MP_DIGIT_BIT;
+   mp_digit n = a->dp[a->used - 1];
+
+   for (; n > 0u; ++bits) n &= n - 1u;
+
+   return bits;
+}

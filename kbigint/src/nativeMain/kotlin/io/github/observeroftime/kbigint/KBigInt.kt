@@ -75,6 +75,28 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     actual val sign: Int
         get() = kbi_mp_sign(value.ptr)
 
+    actual val bitLength: Int
+        get() = if (value.sign != MP_NEG) {
+            mp_count_bits(value.ptr)
+        } else {
+            memScoped {
+                val result = alloc<mp_int>()
+                mp_complement(value.ptr, result.ptr).check()
+                mp_count_bits(result.ptr)
+            }
+        }
+
+    actual val bitCount: Int
+        get() = if (value.sign != MP_NEG) {
+            kbi_mp_count_set_bits(value.ptr)
+        } else {
+            memScoped {
+                val result = alloc<mp_int>()
+                mp_complement(value.ptr, result.ptr).check()
+                kbi_mp_count_set_bits(result.ptr)
+            }
+        }
+
     /**
      * Add two [KBigInt] values.
      *

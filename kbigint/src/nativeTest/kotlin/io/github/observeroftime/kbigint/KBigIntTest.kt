@@ -16,6 +16,31 @@ actual class KBigIntTest {
         assertEquals(0, KBigInt(0).sign)
         assertEquals(1, KBigInt(10).sign)
         assertEquals(-1, KBigInt(-2).sign)
+        assertEquals(-1, KBigInt(-1).sign)
+    }
+
+    @Test
+    actual fun testBits() {
+        val a = KBigInt(1024)
+        val b = KBigInt(-1024)
+        val c = KBigInt(0)
+        val d = KBigInt(-1)
+        val e = KBigInt(302)
+
+        assertEquals(11, a.bitLength)
+        assertEquals(1, a.bitCount)
+
+        assertEquals(10, b.bitLength)
+        assertEquals(10, b.bitCount)
+
+        assertEquals(0, c.bitLength)
+        assertEquals(0, c.bitCount)
+
+        assertEquals(0, d.bitLength)
+        assertEquals(0, d.bitCount)
+
+        assertEquals(9, e.bitLength)
+        assertEquals(5, e.bitCount)
     }
 
     @Test

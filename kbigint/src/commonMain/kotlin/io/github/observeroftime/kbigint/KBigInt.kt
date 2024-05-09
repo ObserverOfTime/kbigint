@@ -23,6 +23,12 @@ expect class KBigInt : Comparable<KBigInt> {
      */
     val sign: Int
 
+    /** The total number of bits in the value. */
+    val bitLength: Int
+
+    /** The number of set bits in the value. */
+    val bitCount: Int
+
     /** Add two [KBigInt] values. */
     operator fun plus(other: KBigInt): KBigInt
 

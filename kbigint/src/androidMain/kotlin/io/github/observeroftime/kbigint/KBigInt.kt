@@ -13,12 +13,29 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     actual constructor(number: Long) : this(number.toBigInteger())
 
-    /** Convert a [ByteArray] to a [KBigInt]. */
     actual constructor(bytes: ByteArray) : this(BigInteger(bytes))
 
     @get:JvmName("signum")
     actual val sign: Int
         get() = value.signum()
+
+    /**
+     * The total number of bits in the value.
+     *
+     * @see [BigInteger.bitLength]
+     */
+    @get:JvmName("bitLength")
+    actual val bitLength: Int
+        get() = value.bitLength()
+
+    /**
+     * The number of set bits in the value.
+     *
+     * @see [BigInteger.bitCount]
+     */
+    @get:JvmName("bitCount")
+    actual val bitCount: Int
+        get() = value.bitCount()
 
     @JvmName("add")
     actual operator fun plus(other: KBigInt) = KBigInt(value + other.value)
@@ -113,6 +130,10 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      */
     fun toDouble() = value.toDouble()
 
-    /** Convert the value to a [ByteArray]. */
+    /**
+     * Convert the value to a [ByteArray].
+     *
+     * @see [BigInteger.toByteArray]
+     */
     actual fun toByteArray(): ByteArray = value.toByteArray()
 }

@@ -11,6 +11,32 @@ export function sign(value) {
 }
 
 /**
+ * Count the total number of bits in the value.
+ *
+ * @param value {bigint}
+ * @return {number}
+ * @see https://stackoverflow.com/a/76616288/21974435
+ */
+export function bitLength(value) {
+    const n = value >= 0n ? value : ~value;
+    const i = (n.toString(16).length - 1) >> 2;
+    return i + 32 - Math.clz32(Number(n >> BigInt(i)))
+}
+
+/**
+ * Count the number of set bits in the value.
+ *
+ * @param value {bigint}
+ * @return {number}
+ * @see https://stackoverflow.com/a/72518920/21974435
+ */
+export function bitCount(value) {
+    let n = (value >= 0n ? value : ~value), bits;
+    for (bits = 0; n > 0n; ++bits) n &= n - 1n;
+    return bits
+}
+
+/**
  * Return the absolute value.
  *
  * @param {bigint} value

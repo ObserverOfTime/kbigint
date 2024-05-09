@@ -10,6 +10,8 @@ internal external object KBigIntUtils {
     fun sqrt(value: BigInt): BigInt
     fun abs(value: BigInt): BigInt
     fun sign(value: BigInt): Int
+    fun bitLength(value: BigInt): Int
+    fun bitCount(value: BigInt): Int
     fun cmp(a: BigInt, b: BigInt): Int
     fun pow(value: BigInt, n: Int): BigInt
     fun toByteArray(value: BigInt): ByteArray

@@ -20,6 +20,12 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
     actual val sign: Int
         get() = KBigIntUtils.sign(value)
 
+    actual val bitLength: Int
+        get() = KBigIntUtils.bitLength(value)
+
+    actual val bitCount: Int
+        get() = KBigIntUtils.bitCount(value)
+
     @JsName("add")
     actual operator fun plus(other: KBigInt): KBigInt {
         val a = this.value
