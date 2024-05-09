@@ -4,15 +4,31 @@ package io.github.observeroftime.kbigint
 
 import java.math.BigInteger
 
+/** A multiplatform implementation of a big integer. */
 actual class KBigInt private constructor(private var value: BigInteger) : Comparable<KBigInt> {
+    /** Convert a [String] to a [KBigInt]. */
     actual constructor(number: String) : this(BigInteger(number))
 
+    /** Convert an [Int] to a [KBigInt]. */
     actual constructor(number: Int) : this(number.toBigInteger())
 
+    /** Convert a [Long] to a [KBigInt]. */
     actual constructor(number: Long) : this(number.toBigInteger())
 
+    /**
+     * Convert a [ByteArray] to a [KBigInt].
+     *
+     * @since 0.3.0
+     */
     actual constructor(bytes: ByteArray) : this(BigInteger(bytes))
 
+    /**
+     * The sign of the value.
+     *
+     * - `-1` if negative
+     * - `0` if equal to `0`
+     * - `1` if positive
+     */
     @get:JvmName("signum")
     actual val sign: Int
         get() = value.signum()
@@ -20,6 +36,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     /**
      * The total number of bits in the value.
      *
+     * @since 0.3.0
      * @see [BigInteger.bitLength]
      */
     @get:JvmName("bitLength")
@@ -29,53 +46,77 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     /**
      * The number of set bits in the value.
      *
+     * @since 0.3.0
      * @see [BigInteger.bitCount]
      */
     @get:JvmName("bitCount")
     actual val bitCount: Int
         get() = value.bitCount()
 
+    /** Add two [KBigInt] values. */
     @JvmName("add")
     actual operator fun plus(other: KBigInt) = KBigInt(value + other.value)
 
+    /** Subtract two [KBigInt] values. */
     @JvmName("subtract")
     actual operator fun minus(other: KBigInt) = KBigInt(value - other.value)
 
+    /** Multiply two [KBigInt] values. */
     @JvmName("multiply")
     actual operator fun times(other: KBigInt) = KBigInt(value * other.value)
 
+    /** Divide two [KBigInt] values. */
     @JvmName("divide")
     actual operator fun div(other: KBigInt) = KBigInt(value / other.value)
 
+    /** Calculate the remainder of the division. */
     @JvmName("remainder")
     actual operator fun rem(other: KBigInt) = KBigInt(value % other.value)
 
+    /** Increment the value. */
     @JvmName("increment")
-    actual operator fun inc() = apply { ++value }
+    actual operator fun inc() = KBigInt(value.inc())
 
+    /** Decrement the value. */
     @JvmName("decrement")
-    actual operator fun dec() = apply { --value }
+    actual operator fun dec() = KBigInt(value.dec())
 
+    /** Negate the value. */
     @JvmName("negate")
     actual operator fun unaryMinus() = KBigInt(value.unaryMinus())
 
+    /** Perform a bitwise `AND` operation. */
     actual infix fun and(other: KBigInt) = KBigInt(value and other.value)
 
+    /** Perform a bitwise `OR` operation. */
     actual infix fun or(other: KBigInt) = KBigInt(value or other.value)
 
+    /** Perform a bitwise `XOR` operation. */
     actual infix fun xor(other: KBigInt) = KBigInt(value xor other.value)
 
+    /**
+     * Find the (absolute) GCD of two [KBigInt] values.
+     *
+     * @since 0.3.1
+     */
     actual fun gcd(other: KBigInt) = KBigInt(value.gcd(other.value))
 
+    /**
+     * Find the (absolute) LCM of two [KBigInt] values.
+     *
+     * @since 0.3.1
+     */
     actual fun lcm(other: KBigInt): KBigInt {
         val a = value.abs()
         val b = other.value.abs()
         return KBigInt(a * b / a.gcd(b))
     }
 
+    /** Shift the value to the left by [n]. */
     @JvmName("shiftLeft")
     actual infix fun shl(n: Int) = KBigInt(value shl n)
 
+    /** Shift the value to the right by [n]. */
     @JvmName("shiftRight")
     actual infix fun shr(n: Int) = KBigInt(value shr n)
 
@@ -99,20 +140,12 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
         return KBigInt(value.sqrt())
     }
 
+    /** Compute the two's-complement of the value. */
     @JvmName("not")
     actual fun inv() = KBigInt(value.not())
 
+    /** Get the absolute value. */
     actual fun abs() = KBigInt(value.abs())
-
-    actual override operator fun compareTo(other: KBigInt) = value.compareTo(other.value)
-
-    actual override fun equals(other: Any?) = other is KBigInt && value == other.value
-
-    actual override fun hashCode(): Int = toString().hashCode()
-
-    actual fun toString(radix: Int): String = value.toString(radix)
-
-    actual override fun toString(): String = value.toString()
 
     /**
      * Convert the value to an [Int].
@@ -145,4 +178,19 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      * @see [BigInteger.toByteArray]
      */
     actual fun toByteArray(): ByteArray = value.toByteArray()
+
+    /**
+     * Convert the value to a [String] with the given [radix].
+     *
+     * @since 0.3.0
+     */
+    actual fun toString(radix: Int): String = value.toString(radix)
+
+    actual override fun toString(): String = value.toString()
+
+    actual override operator fun compareTo(other: KBigInt) = value.compareTo(other.value)
+
+    actual override fun equals(other: Any?) = other is KBigInt && value == other.value
+
+    actual override fun hashCode(): Int = toString().hashCode()
 }

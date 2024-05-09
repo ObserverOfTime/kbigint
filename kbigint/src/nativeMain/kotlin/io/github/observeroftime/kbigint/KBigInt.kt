@@ -7,6 +7,7 @@ import kotlin.native.ref.createCleaner
 import kotlinx.cinterop.*
 import net.libtom.libtommath.*
 
+/** A multiplatform implementation of a big integer. */
 @ObjCName("KBigInt")
 @OptIn(ExperimentalForeignApi::class, ExperimentalObjCName::class)
 actual class KBigInt private constructor(private var value: mp_int) : Comparable<KBigInt> {
@@ -53,7 +54,12 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         mp_init_i64(value.ptr, number).check()
     }
 
-    /** Convert a [ByteArray] to a [KBigInt]. */
+    /**
+     * Convert a [Long] to a [KBigInt].
+     *
+     * @since 0.3.0
+     * @throws [IllegalStateException] if the operation fails
+     */
     actual constructor(bytes: ByteArray) : this() {
         val size = bytes.size + 1
         val sign = if (bytes.any { it < 0 }) 1 else 0
@@ -72,9 +78,22 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         }
     }
 
+    /**
+     * The sign of the value.
+     *
+     * - `-1` if negative
+     * - `0` if equal to `0`
+     * - `1` if positive
+     */
     actual val sign: Int
         get() = kbi_mp_sign(value.ptr)
 
+    /**
+     * The total number of bits in the value.
+     *
+     * @since 0.3.0
+     * @throws [IllegalStateException] if the operation fails
+     */
     actual val bitLength: Int
         get() = if (value.sign != MP_NEG) {
             mp_count_bits(value.ptr)
@@ -86,6 +105,12 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
             }
         }
 
+    /**
+     * The number of set bits in the value.
+     *
+     * @since 0.3.0
+     * @throws [IllegalStateException] if the operation fails
+     */
     actual val bitCount: Int
         get() = if (value.sign != MP_NEG) {
             kbi_mp_count_set_bits(value.ptr)
@@ -289,8 +314,9 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
-     * Find the (absolute) Greatest Common Divisor of two values.
+     * Find the (absolute) GCM of two [KBigInt] values.
      *
+     * @since 0.3.1
      * @throws [IllegalStateException] if the operation fails
      */
     @Throws(IllegalStateException::class)
@@ -301,8 +327,9 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
-     * Find the (absolute) Least Common Multiple of two values.
+     * Find the (absolute) LCM of two [KBigInt] values.
      *
+     * @since 0.3.1
      * @throws [IllegalStateException] if the operation fails
      */
     @Throws(IllegalStateException::class)
@@ -395,25 +422,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         KBigInt(result.ptr)
     }
 
-    actual override operator fun compareTo(other: KBigInt) = mp_cmp(value.ptr, other.value.ptr)
-
-    actual override fun equals(other: Any?) = other is KBigInt && mp_cmp(value.ptr, other.value.ptr) == 0
-
-    actual override fun hashCode(): Int = toString().hashCode()
-
-    actual fun toString(radix: Int): String {
-        val arena = Arena()
-        val size = arena.alloc<IntVar>()
-        mp_radix_size(value.ptr, radix, size.ptr).check()
-        val result = arena.allocArray<ByteVar>(size.value)
-        mp_to_radix(value.ptr, result, size.value.toULong(), null, radix).check()
-        val string = result.toKString()
-        arena.clear()
-        return string
-    }
-
-    actual override fun toString() = toString(10)
-
     /** Convert the value to an [Int]. */
     fun toInt() = mp_get_i32(value.ptr)
 
@@ -423,7 +431,12 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     /** Convert the value to a [Double]. */
     fun toDouble() = mp_get_double(value.ptr)
 
-    /** Convert the value to a [ByteArray]. */
+    /**
+     * Convert the value to a [ByteArray].
+     *
+     * @since 0.3.0
+     * @throws [IllegalStateException] if the operation fails
+     */
     actual fun toByteArray(): ByteArray = memScoped {
         val size = mp_sbin_size(value.ptr)
         val array = allocArray<UByteVar>(size.toInt())
@@ -439,6 +452,31 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
             }
         }
     }
+
+    /**
+     * Convert the value to a [String] with the given [radix].
+     *
+     * @since 0.3.0
+     * @throws [IllegalStateException] if the operation fails
+     */
+    actual fun toString(radix: Int): String {
+        val arena = Arena()
+        val size = arena.alloc<IntVar>()
+        mp_radix_size(value.ptr, radix, size.ptr).check()
+        val result = arena.allocArray<ByteVar>(size.value)
+        mp_to_radix(value.ptr, result, size.value.toULong(), null, radix).check()
+        val string = result.toKString()
+        arena.clear()
+        return string
+    }
+
+    actual override fun toString() = toString(10)
+
+    actual override operator fun compareTo(other: KBigInt) = mp_cmp(value.ptr, other.value.ptr)
+
+    actual override fun equals(other: Any?) = other is KBigInt && mp_cmp(value.ptr, other.value.ptr) == 0
+
+    actual override fun hashCode(): Int = toString().hashCode()
 
     private inline fun dispose(value: mp_int) {
         mp_clear(value.ptr)

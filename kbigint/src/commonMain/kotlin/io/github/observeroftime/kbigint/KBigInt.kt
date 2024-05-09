@@ -11,11 +11,15 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Convert a [Long] to a [KBigInt]. */
     constructor(number: Long)
 
-    /** Convert a [ByteArray] to a [KBigInt]. */
+    /**
+     * Convert a [ByteArray] to a [KBigInt].
+     *
+     * @since 0.3.0
+     */
     constructor(bytes: ByteArray)
 
     /**
-     * The sign of the value:
+     * The sign of the value.
      *
      * - `-1` if negative
      * - `0` if equal to `0`
@@ -23,10 +27,18 @@ expect class KBigInt : Comparable<KBigInt> {
      */
     val sign: Int
 
-    /** The total number of bits in the value. */
+    /**
+     * The total number of bits in the value.
+     *
+     * @since 0.3.0
+     */
     val bitLength: Int
 
-    /** The number of set bits in the value. */
+    /**
+     * The number of set bits in the value.
+     *
+     * @since 0.3.0
+     */
     val bitCount: Int
 
     /** Add two [KBigInt] values. */
@@ -62,10 +74,18 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Perform a bitwise `XOR` operation. */
     infix fun xor(other: KBigInt): KBigInt
 
-    /** Find the (absolute) Greatest Common Divisor of two values. */
+    /**
+     * Find the (absolute) GCD of two [KBigInt] values.
+     *
+     * @since 0.3.1
+     */
     fun gcd(other: KBigInt): KBigInt
 
-    /** Find the (absolute) Least Common Multiplier of two values. */
+    /**
+     * Find the (absolute) LCM of two [KBigInt] values.
+     *
+     * @since 0.3.1
+     */
     fun lcm(other: KBigInt): KBigInt
 
     /** Shift the value to the left by [n]. */
@@ -86,17 +106,25 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Get the absolute value. */
     fun abs(): KBigInt
 
-    /** Convert the value to a [ByteArray]. */
+    /**
+     * Convert the value to a [ByteArray].
+     *
+     * @since 0.3.0
+     */
     fun toByteArray(): ByteArray
+
+    /**
+     * Convert the value to a [String] with the given [radix].
+     *
+     * @since 0.3.0
+     */
+    fun toString(radix: Int): String
+
+    override fun toString(): String
 
     override operator fun compareTo(other: KBigInt): Int
 
     override fun equals(other: Any?): Boolean
 
     override fun hashCode(): Int
-
-    /** Convert the value to a [String] with the given [radix]. */
-    fun toString(radix: Int): String
-
-    override fun toString(): String
 }
