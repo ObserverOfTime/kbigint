@@ -12,6 +12,7 @@ expect class KBigIntTest {
     fun testBitOps()
     fun testShifts()
     fun testInvert()
+    fun testGcdLcm()
     fun testPow()
     fun testSqrt()
     fun testAbs()

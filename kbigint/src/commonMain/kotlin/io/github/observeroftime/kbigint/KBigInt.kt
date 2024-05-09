@@ -62,6 +62,12 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Perform a bitwise `XOR` operation. */
     infix fun xor(other: KBigInt): KBigInt
 
+    /** Find the (absolute) Greatest Common Divisor of two values. */
+    fun gcd(other: KBigInt): KBigInt
+
+    /** Find the (absolute) Least Common Multiplier of two values. */
+    fun lcm(other: KBigInt): KBigInt
+
     /** Shift the value to the left by [n]. */
     infix fun shl(n: Int): KBigInt
 

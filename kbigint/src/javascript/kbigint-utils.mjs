@@ -70,6 +70,18 @@ export function cmp(a, b) {
 }
 
 /**
+ * Find the Greatest Common Divisor
+ *
+ * @param {bigint} a
+ * @param {bigint} b
+ * @returns {bigint}
+ */
+export function gcd(a, b) {
+    if (b === 0n) return a;
+    return gcd(b, a % b);
+}
+
+/**
  * Raise the value to the `n`-th power.
  *
  * @param {bigint} value

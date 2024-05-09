@@ -289,6 +289,30 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Find the (absolute) Greatest Common Divisor of two values.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @Throws(IllegalStateException::class)
+    actual fun gcd(other: KBigInt) = memScoped {
+        val result = alloc<mp_int>()
+        mp_gcd(value.ptr, other.value.ptr, result.ptr).check()
+        KBigInt(result.ptr)
+    }
+
+    /**
+     * Find the (absolute) Least Common Multiple of two values.
+     *
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @Throws(IllegalStateException::class)
+    actual fun lcm(other: KBigInt) = memScoped {
+        val result = alloc<mp_int>()
+        mp_lcm(value.ptr, other.value.ptr, result.ptr).check()
+        KBigInt(result.ptr)
+    }
+
+    /**
      * Shift the value to the left by [n].
      *
      * @throws [IllegalStateException] if the operation fails

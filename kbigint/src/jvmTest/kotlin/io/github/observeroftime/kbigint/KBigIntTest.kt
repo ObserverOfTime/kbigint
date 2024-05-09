@@ -76,6 +76,15 @@ actual class KBigIntTest {
     }
 
     @Test
+    actual fun testGcdLcm() {
+        val a = KBigInt(-4)
+        val b = KBigInt(10)
+
+        assertEquals(KBigInt(2), a.gcd(b))
+        assertEquals(KBigInt(20), a.lcm(b))
+    }
+
+    @Test
     actual fun testPow() {
         assertEquals(KBigInt("4611686018427387904"), long pow 2)
     }

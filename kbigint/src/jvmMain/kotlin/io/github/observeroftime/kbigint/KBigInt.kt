@@ -65,6 +65,14 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     actual infix fun xor(other: KBigInt) = KBigInt(value xor other.value)
 
+    actual fun gcd(other: KBigInt) = KBigInt(value.gcd(other.value))
+
+    actual fun lcm(other: KBigInt): KBigInt {
+        val a = value.abs()
+        val b = other.value.abs()
+        return KBigInt(a * b / a.gcd(b))
+    }
+
     @JvmName("shiftLeft")
     actual infix fun shl(n: Int) = KBigInt(value shl n)
 

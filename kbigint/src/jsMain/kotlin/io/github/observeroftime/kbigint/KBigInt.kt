@@ -97,6 +97,19 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
         return KBigInt(js("a ^ b").unsafeCast<BigInt>())
     }
 
+    actual fun gcd(other: KBigInt): KBigInt {
+        val gcd = KBigIntUtils.gcd(value, other.value)
+        return KBigInt(KBigIntUtils.abs(gcd))
+    }
+
+    actual fun lcm(other: KBigInt): KBigInt {
+        val a = this.value
+        val b = other.value
+        val c = KBigIntUtils.gcd(a, b)
+        val lcm = js("a * b / c").unsafeCast<BigInt>()
+        return KBigInt(KBigIntUtils.abs(lcm))
+    }
+
     @JsName("shiftLeft")
     actual infix fun shl(n: Int): KBigInt {
         val a = this.value
