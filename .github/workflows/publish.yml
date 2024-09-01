@@ -138,7 +138,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Generate changelog
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
         id: cliff
         with:
           args: -v --current
