@@ -5,6 +5,7 @@ dependency-graph-reports/
 local.properties
 
 ### Kotlin ###
+.kotlin/
 kotlin-js-store/
 
 ### JetBrains ###

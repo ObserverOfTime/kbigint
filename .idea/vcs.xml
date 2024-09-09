@@ -11,10 +11,6 @@
       <list />
     </option>
   </component>
-  <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/kbigint/src/nativeInterop/libtommath" vcs="" />
-  </component>
   <component name="IssueNavigationConfiguration">
     <option name="links">
       <list>
@@ -36,5 +32,9 @@
         </IssueNavigationLink>
       </list>
     </option>
+  </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/kbigint/src/nativeInterop/libtommath" vcs="" />
   </component>
 </project>
