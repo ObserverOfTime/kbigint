@@ -21,7 +21,7 @@ kotlin {
         publishLibraryVariants("release")
     }
 
-    js(IR) {
+    js {
         moduleName = project.name
 
         browser {
@@ -43,6 +43,9 @@ kotlin {
         }
 
         useEsModules()
+
+        @Suppress("OPT_IN_USAGE")
+        compilerOptions.target.set("es2015")
     }
 
     when {

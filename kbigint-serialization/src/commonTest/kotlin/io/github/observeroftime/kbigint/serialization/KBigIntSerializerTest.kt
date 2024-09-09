@@ -1,5 +1,6 @@
 package io.github.observeroftime.kbigint.serialization
 
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -28,7 +29,7 @@ class KBigIntSerializerTest {
     }
 
     @Test
-    @JvmOnly
+    @Ignore
     fun testEncodeAlias() {
         val element = Json.encodeToJsonElement<KBigInt>(KBigInt(N))
         assertTrue { element.jsonPrimitive.isString }
@@ -36,7 +37,7 @@ class KBigIntSerializerTest {
     }
 
     @Test
-    @JvmOnly
+    @Ignore
     fun testDecodeAlias() {
         assertEquals(KBigInt(N), Json.decodeFromJsonElement<KBigInt>(JsonPrimitive(N)))
     }

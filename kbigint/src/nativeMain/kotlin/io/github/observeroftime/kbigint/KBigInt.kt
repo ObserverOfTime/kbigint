@@ -11,11 +11,15 @@ import net.libtom.libtommath.*
 @ObjCName("KBigInt")
 @OptIn(ExperimentalForeignApi::class, ExperimentalObjCName::class)
 actual class KBigInt private constructor(private var value: mp_int) : Comparable<KBigInt> {
+    @Suppress("unused") // false positive
     private constructor() : this(nativeHeap.alloc<mp_int>())
 
     @Suppress("unused")
     @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = createCleaner(value, ::dispose)
+    private val cleaner = createCleaner(value) {
+        mp_clear(it.ptr)
+        nativeHeap.free(it)
+    }
 
     @Throws(IllegalStateException::class)
     private constructor(value: CValuesRef<mp_int>) : this() {
@@ -478,11 +482,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
 
     actual override fun hashCode(): Int = toString().hashCode()
 
-    private inline fun dispose(value: mp_int) {
-        mp_clear(value.ptr)
-        nativeHeap.free(value)
-    }
-
+    @Suppress("NOTHING_TO_INLINE")
     @Throws(IllegalStateException::class)
     private inline fun mp_err.check() {
         if (this != mp_err.MP_OKAY)

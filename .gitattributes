@@ -1,4 +1,4 @@
-* text eol=lf
+* text=auto eol=lf
 
 gradlew linguist-generated
 gradlew.bat linguist-generated eol=crlf

@@ -37,9 +37,9 @@ val decoded = json.decodeFromJsonElement(encoded)
 
 ### Serializable type alias
 
-The serializable type alias defined can be used explicitly in type parameters.
+The serializable type alias can be used explicitly in type parameters.
 
-**NOTE: this method only works in JVM & Android.**
+*NOTE: this method may or may not work.*
 
 ```kotlin
 import io.github.observeroftime.kbigint.serialization.KBigInt

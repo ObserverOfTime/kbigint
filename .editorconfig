@@ -19,7 +19,11 @@ max_line_length = off
 [.editorconfig]
 max_line_length = off
 
-[*.{json,yml,toml,xml}]
+[*.toml]
+max_line_length = off
+indent_size = 2
+
+[*.{json,yml,xml}]
 indent_size = 2
 
 # noinspection EditorConfigKeyCorrectness

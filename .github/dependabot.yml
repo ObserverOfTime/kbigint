@@ -15,7 +15,7 @@ updates:
   - package-ecosystem: gradle
     directory: /
     schedule:
-      interval: monthly
+      interval: weekly
       day: saturday
     commit-message:
       prefix: build

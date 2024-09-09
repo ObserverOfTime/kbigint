@@ -1,8 +1,5 @@
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
-import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
-import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
-import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 plugins {
     alias(libs.plugins.kotlin.mpp) apply false
@@ -32,14 +29,6 @@ plugins.withType<NodeJsRootPlugin> {
     the<NodeJsRootExtension>().download = false
 }
 
-plugins.withType<YarnPlugin> {
-    the<YarnRootExtension>().apply {
-        download = false
-        yarnLockAutoReplace = true
-        yarnLockMismatchReport = YarnLockMismatchReport.WARNING
-    }
-}
-
 tasks.dokkaHtmlMultiModule {
     moduleName.set("KBigInt")
     includes.from("README.md")
@@ -52,6 +41,6 @@ tasks.dokkaHtmlMultiModule {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.7"
+    gradleVersion = "8.10"
     distributionType = Wrapper.DistributionType.BIN
 }
