@@ -16,19 +16,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: common
             targets: publishKotlinMultiplatformPublicationToLocalRepository
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: JVM
             targets: publishJvmPublicationToLocalRepository
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: Android
             targets: publishAndroidReleasePublicationToLocalRepository
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: JS
             targets: publishJsPublicationToLocalRepository
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: Linux
             targets: >-
               publishLinuxX64PublicationToLocalRepository

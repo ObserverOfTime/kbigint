@@ -28,16 +28,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: JVM
             targets: jvmTest
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: Android
             targets: testReleaseUnitTest
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: JS
             targets: jsNodeTest jsBrowserTest
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: Linux
             targets: compileKotlinLinuxArm64 linuxX64Test
           - os: windows-latest
