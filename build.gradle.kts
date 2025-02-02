@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsEnvSpec
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
 
 plugins {
     alias(libs.plugins.kotlin.mpp) apply false
@@ -25,8 +25,8 @@ subprojects {
     }
 }
 
-plugins.withType<NodeJsRootPlugin> {
-    the<NodeJsRootExtension>().download = false
+plugins.withType<NodeJsPlugin> {
+    the<NodeJsEnvSpec>().download = false
 }
 
 tasks.dokkaHtmlMultiModule {

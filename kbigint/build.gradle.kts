@@ -1,11 +1,21 @@
 import java.io.ByteArrayOutputStream
 import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 
 val os: OperatingSystem = OperatingSystem.current()
 val libsDir = layout.buildDirectory.get().dir("tmp").dir("libs")
 val libtommathDir = projectDir.resolve("src/nativeInterop/libtommath")
+
+fun KotlinNativeTarget.libtommath() {
+    compilations.configureEach {
+        cinterops.create("tommath") {
+            includeDirs.allHeaders(libtommathDir)
+            extraOpts("-libraryPath", libsDir.dir(konanTarget.name))
+        }
+    }
+}
 
 plugins {
     `maven-publish`
@@ -50,27 +60,17 @@ kotlin {
         compilerOptions.target.set("es2015")
     }
 
-    when {
-        os.isLinux -> listOf(linuxX64(), linuxArm64())
-        os.isWindows -> listOf(mingwX64())
-        os.isMacOsX -> listOf(
-            macosArm64(),
-            macosX64(),
-            iosArm64(),
-            iosSimulatorArm64()
-        )
-        else -> {
-            val arch = System.getProperty("os.arch")
-            throw GradleException("Unsupported platform: $os ($arch)")
-        }
-    }.forEach {
-        it.compilations.configureEach {
-            cinterops.create("tommath") {
-                includeDirs.allHeaders(libtommathDir)
-                extraOpts("-libraryPath", libsDir.dir(konanTarget.name))
-            }
-        }
-    }
+    linuxX64 { libtommath() }
+    linuxArm64 { libtommath() }
+
+    mingwX64 { libtommath() }
+
+    macosArm64 { libtommath() }
+    macosX64 { libtommath() }
+    iosArm64 { libtommath() }
+    iosSimulatorArm64 { libtommath() }
+
+    applyDefaultHierarchyTemplate()
 
     jvmToolchain(17)
 
@@ -106,7 +106,7 @@ kotlin {
 
 android {
     namespace = group.toString()
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 21
     }
@@ -129,7 +129,6 @@ if (os.isLinux) {
 
                 environment["ARFLAGS"] = "rcs"
                 environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS"
-                environment["CC"] = "gcc"
             }
 
             copy {
@@ -151,7 +150,28 @@ if (os.isLinux) {
                 environment["ARFLAGS"] = "rcs"
                 environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS"
                 environment["CROSS_COMPILE"] = "aarch64-linux-gnu-"
-                environment["CC"] = "aarch64-linux-gnu-gcc"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+
+    tasks.getByName<CInteropProcess>("cinteropTommathMingwX64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " -Wno-expansion-to-defined -Wno-declaration-after-statement -Wno-bad-function-cast"
+                environment["CROSS_COMPILE"] = "x86_64-w64-mingw32-"
             }
 
             copy {
@@ -306,7 +326,7 @@ tasks.dokkaHtmlPartial {
     pluginsMapConfiguration.set(
         mapOf(
             "org.jetbrains.dokka.base.DokkaBase" to
-                """{"footerMessage": "(c) 2024 ObserverOfTime"}"""
+                """{"footerMessage": "(c) 2025 ObserverOfTime"}"""
         )
     )
     dokkaSourceSets.configureEach {

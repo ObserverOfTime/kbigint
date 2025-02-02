@@ -48,25 +48,17 @@ kotlin {
         compilerOptions.target.set("es2015")
     }
 
-    when {
-        os.isLinux -> {
-            linuxX64()
-            linuxArm64()
-        }
-        os.isWindows -> {
-            mingwX64()
-        }
-        os.isMacOsX -> {
-            macosX64()
-            macosArm64()
-            iosArm64()
-            iosSimulatorArm64()
-        }
-        else -> {
-            val arch = System.getProperty("os.arch")
-            throw GradleException("Unsupported platform: $os ($arch)")
-        }
-    }
+    linuxX64 {}
+    linuxArm64 {}
+
+    mingwX64 {}
+
+    macosX64 {}
+    macosArm64 {}
+    iosArm64 {}
+    iosSimulatorArm64 {}
+
+    applyDefaultHierarchyTemplate()
 
     jvmToolchain(17)
 
@@ -101,7 +93,7 @@ kotlin {
 
 android {
     namespace = "$group.serialization"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         minSdk = 21
     }
@@ -120,7 +112,7 @@ tasks.dokkaHtmlPartial {
     pluginsMapConfiguration.set(
         mapOf(
             "org.jetbrains.dokka.base.DokkaBase" to
-                """{"footerMessage": "(c) 2024 ObserverOfTime"}"""
+                """{"footerMessage": "(c) 2025 ObserverOfTime"}"""
         )
     )
     dokkaSourceSets.configureEach {
