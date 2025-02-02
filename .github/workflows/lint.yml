@@ -32,14 +32,14 @@ jobs:
           java-version: 17
       - name: Install ktlint
         run: |-
-          curl -sSLO https://github.com/pinterest/ktlint/releases/download/1.2.1/ktlint
+          curl -sSLO https://github.com/pinterest/ktlint/releases/download/1.5.0/ktlint
           chmod a+x ktlint && mv ktlint $RUNNER_TOOL_CACHE/ktlint
       - name: Run ktlint
         id: ktlint
         run: $RUNNER_TOOL_CACHE/ktlint --reporter=sarif,output=build/reports/ktlint.sarif
       - name: Upload report
         uses: github/codeql-action/upload-sarif@v3
-        if: "!cancelled() && steps.ktlint.outcome == 'failure'"
+        if: "!cancelled()"
         with:
           sarif_file: build/reports/ktlint.sarif
           category: ktlint
@@ -55,8 +55,8 @@ jobs:
           java-version: 17
       - name: Install detekt
         run: |-
-          curl -sSLO https://github.com/detekt/detekt/releases/download/v1.23.6/detekt-cli-1.23.6-all.jar
-          mv detekt-cli-1.23.6-all.jar $RUNNER_TOOL_CACHE/detekt-cli.jar
+          curl -sSLO https://github.com/detekt/detekt/releases/download/v1.23.7/detekt-cli-1.23.7-all.jar
+          mv detekt-cli-1.23.7-all.jar $RUNNER_TOOL_CACHE/detekt-cli.jar
       - name: Run detekt
         id: detekt
         run: >-
@@ -64,7 +64,7 @@ jobs:
           --jvm-target 17 -c .github/detekt.yml -r sarif:build/reports/detekt.sarif
       - name: Upload report
         uses: github/codeql-action/upload-sarif@v3
-        if: "!cancelled() && steps.detekt.outcome == 'failure'"
+        if: "!cancelled()"
         with:
           sarif_file: build/reports/detekt.sarif
           category: detekt
