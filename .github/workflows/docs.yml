@@ -39,7 +39,7 @@ jobs:
             gradle/libs.versions.toml
             gradle/wrapper/gradle-wrapper.properties
       - name: Set up cross compilation
-        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
+        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu gcc-mingw-w64-x86-64-posix
       - name: Get the cache versions
         id: versions
         shell: sh
@@ -58,13 +58,13 @@ jobs:
           path: ${{runner.tool_cache}}/konan/dependencies
           key: konan-${{runner.os}}-dependencies
       - name: Build documentation
-        run: ./gradlew --no-daemon dokkaHtmlMultiModule
+        run: ./gradlew --no-daemon dokkaGeneratePublicationHtml
         env:
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/dokka/htmlMultiModule
+          path: build/dokka/html
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

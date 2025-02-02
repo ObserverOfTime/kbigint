@@ -25,22 +25,26 @@ subprojects {
     }
 }
 
+dependencies {
+    dokka(project(":kbigint"))
+    dokka(project(":kbigint-serialization"))
+}
+
 plugins.withType<NodeJsPlugin> {
     the<NodeJsEnvSpec>().download = false
 }
 
-tasks.dokkaHtmlMultiModule {
+dokka {
     moduleName.set("KBigInt")
-    includes.from("README.md")
-    pluginsMapConfiguration.set(
-        mapOf(
-            "org.jetbrains.dokka.base.DokkaBase" to
-                """{"footerMessage": "(c) 2024 ObserverOfTime"}"""
-        )
-    )
+    dokkaSourceSets.configureEach {
+        includes.from("README.md")
+    }
+    pluginsConfiguration.html {
+        footerMessage.set("(c) 2024-2025 ObserverOfTime")
+    }
 }
 
 tasks.wrapper {
-    gradleVersion = "8.10"
+    gradleVersion = "8.10.2"
     distributionType = Wrapper.DistributionType.BIN
 }

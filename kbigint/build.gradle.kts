@@ -320,30 +320,29 @@ if (os.isLinux) {
     }
 }
 
-tasks.dokkaHtmlPartial {
-    moduleName.set("KBigInt")
-    suppressInheritedMembers.set(false)
-    pluginsMapConfiguration.set(
-        mapOf(
-            "org.jetbrains.dokka.base.DokkaBase" to
-                """{"footerMessage": "(c) 2025 ObserverOfTime"}"""
-        )
-    )
-    dokkaSourceSets.configureEach {
-        jdkVersion.set(17)
-        includes.from(file("README.md"))
-    }
-}
-
 tasks.withType<AbstractPublishToMaven>().configureEach {
     mustRunAfter(tasks.withType<Sign>())
 }
 
-tasks.create<Jar>("javadocJar") {
+tasks.register<Jar>("javadocJar") {
     group = "documentation"
     group = "documentation"
     archiveClassifier.set("javadoc")
     from(files("README.md"))
+}
+
+dokka {
+    moduleName.set("KBigInt")
+    pluginsConfiguration.html {
+        footerMessage.set("(c) 2024-2025 ObserverOfTime")
+    }
+    dokkaSourceSets.configureEach {
+        jdkVersion.set(17)
+        includes.from(file("README.md"))
+    }
+    dokkaPublications.configureEach {
+        suppressInheritedMembers.set(false)
+    }
 }
 
 publishing {

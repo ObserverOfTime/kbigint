@@ -1,8 +1,4 @@
-import java.net.URL
-import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-
-val os: OperatingSystem = OperatingSystem.current()
 
 plugins {
     `maven-publish`
@@ -106,32 +102,31 @@ android {
     }
 }
 
-tasks.dokkaHtmlPartial {
-    moduleName.set("KBigInt Serialization")
-    suppressInheritedMembers.set(false)
-    pluginsMapConfiguration.set(
-        mapOf(
-            "org.jetbrains.dokka.base.DokkaBase" to
-                """{"footerMessage": "(c) 2025 ObserverOfTime"}"""
-        )
-    )
-    dokkaSourceSets.configureEach {
-        jdkVersion.set(17)
-        includes.from(file("README.md"))
-        externalDocumentationLink {
-            url.set(URL("https://kotlinlang.org/api/kotlinx.serialization/"))
-        }
-    }
-}
-
 tasks.withType<AbstractPublishToMaven>().configureEach {
     mustRunAfter(tasks.withType<Sign>())
 }
 
-tasks.create<Jar>("javadocJar") {
+tasks.register<Jar>("javadocJar") {
     group = "documentation"
     archiveClassifier.set("javadoc")
     from(files("README.md"))
+}
+
+dokka {
+    moduleName.set("KBigInt Serialization")
+    pluginsConfiguration.html {
+        footerMessage.set("(c) 2024-2025 ObserverOfTime")
+    }
+    dokkaSourceSets.configureEach {
+        jdkVersion.set(17)
+        includes.from(file("README.md"))
+        externalDocumentationLinks.register("kotlinx.serialization") {
+            url("https://kotlinlang.org/api/kotlinx.serialization/")
+        }
+    }
+    dokkaPublications.configureEach {
+        suppressInheritedMembers.set(false)
+    }
 }
 
 publishing {
