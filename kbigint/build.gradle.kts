@@ -60,15 +60,21 @@ kotlin {
         compilerOptions.target.set("es2015")
     }
 
-    linuxX64 { libtommath() }
-    linuxArm64 { libtommath() }
+    if (os.isLinux) {
+        linuxX64 { libtommath() }
+        linuxArm64 { libtommath() }
+    }
 
-    mingwX64 { libtommath() }
+    if (!os.isMacOsX) {
+        mingwX64 { libtommath() }
+    }
 
-    macosArm64 { libtommath() }
-    macosX64 { libtommath() }
-    iosArm64 { libtommath() }
-    iosSimulatorArm64 { libtommath() }
+    if (!os.isWindows) {
+        macosArm64 { libtommath() }
+        macosX64 { libtommath() }
+        iosArm64 { libtommath() }
+        iosSimulatorArm64 { libtommath() }
+    }
 
     applyDefaultHierarchyTemplate()
 

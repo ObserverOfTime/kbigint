@@ -57,7 +57,7 @@ jobs:
             gradle/libs.versions.toml
             gradle/wrapper/gradle-wrapper.properties
       - name: Set up cross compilation
-        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
+        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu gcc-mingw-w64-x86-64-posix
         if: matrix.platform == 'Linux' || matrix.platform == 'common'
       - name: Get the cache versions
         id: versions

@@ -1,4 +1,7 @@
+import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
+val os: OperatingSystem = OperatingSystem.current()
 
 plugins {
     `maven-publish`
@@ -44,15 +47,21 @@ kotlin {
         compilerOptions.target.set("es2015")
     }
 
-    linuxX64 {}
-    linuxArm64 {}
+    if (os.isLinux) {
+        linuxX64 {}
+        linuxArm64 {}
+    }
 
-    mingwX64 {}
+    if (!os.isMacOsX) {
+        mingwX64 {}
+    }
 
-    macosX64 {}
-    macosArm64 {}
-    iosArm64 {}
-    iosSimulatorArm64 {}
+    if (!os.isWindows) {
+        macosX64 {}
+        macosArm64 {}
+        iosArm64 {}
+        iosSimulatorArm64 {}
+    }
 
     applyDefaultHierarchyTemplate()
 
