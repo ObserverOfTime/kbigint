@@ -1,6 +1,6 @@
 [versions]
-kotlin-stdlib = "2.1.10"
-kotlin-serialization = "1.8.0"
+kotlin-stdlib = "2.1.20"
+kotlin-serialization = "1.8.1"
 android-gradle = {strictly = "8.7.3"}
 dokka = "2.0.0"
 
