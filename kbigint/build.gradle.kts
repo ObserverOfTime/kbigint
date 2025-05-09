@@ -73,6 +73,7 @@ kotlin {
         macosArm64 { libtommath() }
         macosX64 { libtommath() }
         iosArm64 { libtommath() }
+        iosX64 { libtommath() }
         iosSimulatorArm64 { libtommath() }
     }
 
@@ -296,6 +297,35 @@ if (os.isLinux) {
         }
     }
 
+    tasks.getByName<CInteropProcess>("cinteropTommathIosX64") {
+        outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
+
+        doFirst {
+            val output = ByteArrayOutputStream()
+            exec {
+                standardOutput = output
+                commandLine("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
+            }
+            val sysroot = output.use { it.toString().trimEnd() }
+
+            exec {
+                executable = "make"
+                workingDir = libtommathDir
+                args("clean", "libtommath.a")
+
+                environment["ARFLAGS"] = "rcs"
+                environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS" +
+                    " --target=x86_64-apple-ios-simulator -isysroot $sysroot -Wno-unused-but-set-variable"
+                environment["CC"] = "clang"
+            }
+
+            copy {
+                from(libtommathDir.resolve("libtommath.a"))
+                into(libsDir.dir(konanTarget.name))
+            }
+        }
+    }
+
     tasks.getByName<CInteropProcess>("cinteropTommathIosSimulatorArm64") {
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
@@ -303,7 +333,7 @@ if (os.isLinux) {
             val output = ByteArrayOutputStream()
             exec {
                 standardOutput = output
-                commandLine("xcrun", "--sdk", "iphoneos", "--show-sdk-path")
+                commandLine("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
             }
             val sysroot = output.use { it.toString().trimEnd() }
 

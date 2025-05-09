@@ -43,9 +43,12 @@ jobs:
           - os: windows-latest
             platform: Windows
             targets: mingwX64Test
+          - os: macos-13
+            platform: macOS/iOS (x64)
+            targets: macosX64Test iosX64Test
           - os: macos-14
-            platform: macOS/iOS
-            targets: macosX64Test macosArm64Test iosSimulatorArm64Test
+            platform: macOS/iOS (arm64)
+            targets: macosArm64Test iosSimulatorArm64Test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
