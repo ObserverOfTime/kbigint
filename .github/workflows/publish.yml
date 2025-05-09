@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build:
     runs-on: ${{matrix.os}}
-    name: Build ${{matrix.platform}} packages
+    name: Build ${{matrix.platform}}${{matrix.arch != '' && format(' ({0})', matrix.arch) || ''}}) packages
     strategy:
       fail-fast: false
       matrix:
@@ -36,12 +36,19 @@ jobs:
           - os: windows-latest
             platform: Windows
             targets: publishMingwX64PublicationToLocalRepository
-          - os: macos-14
+          - os: macos-13
             platform: macOS/iOS
+            arch: x64
             targets: >-
               publishMacosX64PublicationToLocalRepository
+              publishIosX64PublicationToLocalRepository
+          - os: macos-14
+            platform: macOS/iOS
+            arch: arm64
+            targets: >-
               publishMacosArm64PublicationToLocalRepository
               publishIosArm64PublicationToLocalRepository
+              publishIosSimulatorArm64PublicationToLocalRepository
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -86,7 +93,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: kbigint-${{matrix.platform == 'macOS/iOS' && 'macOS-iOS' || matrix.platform}}
+          name: kbigint-${{matrix.platform == 'macOS/iOS' && format('macOS-iOS-{0}', matrix.arch) || matrix.platform}}
           path: |
             build/repo/**
             !build/repo/**/maven-metadata.*
