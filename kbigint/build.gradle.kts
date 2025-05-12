@@ -1,10 +1,12 @@
 import java.io.ByteArrayOutputStream
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.nativeplatform.platform.internal.DefaultArchitecture
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 
 val os: OperatingSystem = OperatingSystem.current()
+val arch = DefaultArchitecture(System.getProperty("os.arch"))
 val libsDir = layout.buildDirectory.get().dir("tmp").dir("libs")
 val libtommathDir = projectDir.resolve("src/nativeInterop/libtommath")
 
@@ -34,7 +36,7 @@ kotlin {
     }
 
     js {
-        moduleName = project.name
+        outputModuleName.set(project.name)
 
         browser {
             webpackTask {
@@ -43,7 +45,7 @@ kotlin {
 
             testTask {
                 useKarma {
-                    useChromiumHeadless()
+                    useChromeHeadlessNoSandbox()
                 }
             }
         }
@@ -136,6 +138,9 @@ if (os.isLinux) {
 
                 environment["ARFLAGS"] = "rcs"
                 environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS"
+                if (!arch.isAmd64) {
+                    environment["CROSS_COMPILE"] = "x86_64-linux-gnu-"
+                }
             }
 
             copy {
@@ -156,7 +161,9 @@ if (os.isLinux) {
 
                 environment["ARFLAGS"] = "rcs"
                 environment["CFLAGS"] = "-O2 -DMP_NO_FILE -DMP_USE_ENUMS"
-                environment["CROSS_COMPILE"] = "aarch64-linux-gnu-"
+                if (!arch.isArm64) {
+                    environment["CROSS_COMPILE"] = "aarch64-linux-gnu-"
+                }
             }
 
             copy {

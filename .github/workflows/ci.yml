@@ -28,18 +28,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: JVM
             targets: jvmTest
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: Android
             targets: testReleaseUnitTest
-          - os: ubuntu-22.04
+          - os: ubuntu-22.04 # chromium is borked in 24.04
             platform: JS
             targets: jsNodeTest jsBrowserTest
-          - os: ubuntu-22.04
-            platform: Linux
-            targets: compileKotlinLinuxArm64 linuxX64Test
+          - os: ubuntu-24.04
+            platform: Linux (x64)
+            targets: linuxX64Test
+          - os: ubuntu-24.04-arm
+            platform: Linux (arm64)
+            targets: linuxArm64TestBinaries
           - os: windows-latest
             platform: Windows
             targets: mingwX64Test
@@ -68,8 +71,12 @@ jobs:
         id: chromium
         if: matrix.platform == 'JS'
       - name: Set up cross compilation
-        run: sudo apt-get install -qy {binutils,gcc}-aarch64-linux-gnu
-        if: matrix.platform == 'Linux'
+        run: |-
+          sudo apt-get update -q
+          sudo apt-get install -qy {binutils,gcc}-${ARCH}-linux-gnu
+        if: startsWith(matrix.platform, 'Linux')
+        env:
+          ARCH: ${{contains(matrix.platform, 'arm64') && 'x86-64' || 'aarch64'}}
       - name: Get the cache versions
         id: versions
         shell: sh
