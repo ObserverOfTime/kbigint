@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build:
     runs-on: ${{matrix.os}}
-    name: Build ${{matrix.platform}}${{matrix.arch != '' && format(' ({0})', matrix.arch) || ''}}) packages
+    name: Build ${{matrix.platform}}${{matrix.arch != '' && format(' ({0})', matrix.arch) || ''}} packages
     strategy:
       fail-fast: false
       matrix:
