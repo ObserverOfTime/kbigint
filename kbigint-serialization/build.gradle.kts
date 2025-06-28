@@ -21,7 +21,7 @@ kotlin {
     }
 
     js {
-        moduleName = project.name
+        outputModuleName.set(project.name)
 
         browser {
             webpackTask {
