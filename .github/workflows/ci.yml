@@ -64,7 +64,7 @@ jobs:
             gradle/libs.versions.toml
             gradle/wrapper/gradle-wrapper.properties
       - name: Set up Chromium
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
         id: chromium
         if: matrix.platform == 'JS'
       - name: Set up cross compilation
