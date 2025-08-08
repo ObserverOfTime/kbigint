@@ -28,25 +28,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: JVM
             targets: jvmTest
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: Android
             targets: testReleaseUnitTest
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: JS
             targets: jsNodeTest jsBrowserTest
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: Linux
             targets: compileKotlinLinuxArm64 linuxX64Test
-          - os: windows-latest
+          - os: windows-2025
             platform: Windows
             targets: mingwX64Test
           - os: macos-13
             platform: macOS/iOS (x64)
             targets: macosX64Test iosX64Test
-          - os: macos-14
+          - os: macos-15
             platform: macOS/iOS (arm64)
             targets: macosArm64Test iosSimulatorArm64Test
     steps:

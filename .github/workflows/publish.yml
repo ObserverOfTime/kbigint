@@ -16,24 +16,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: common
             targets: publishKotlinMultiplatformPublicationToLocalRepository
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: JVM
             targets: publishJvmPublicationToLocalRepository
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: Android
             targets: publishAndroidReleasePublicationToLocalRepository
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: JS
             targets: publishJsPublicationToLocalRepository
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             platform: Linux
             targets: >-
               publishLinuxX64PublicationToLocalRepository
               publishLinuxArm64PublicationToLocalRepository
-          - os: windows-latest
+          - os: windows-2025
             platform: Windows
             targets: publishMingwX64PublicationToLocalRepository
           - os: macos-13
@@ -42,7 +42,7 @@ jobs:
             targets: >-
               publishMacosX64PublicationToLocalRepository
               publishIosX64PublicationToLocalRepository
-          - os: macos-14
+          - os: macos-15
             platform: macOS/iOS
             arch: arm64
             targets: >-
@@ -158,4 +158,3 @@ jobs:
         run: gh release create $GITHUB_REF_NAME -F '${{steps.cliff.outputs.changelog}}'
         env:
           GH_TOKEN: ${{github.token}}
-
