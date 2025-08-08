@@ -8,6 +8,10 @@ val os: OperatingSystem = OperatingSystem.current()
 val libsDir = layout.buildDirectory.get().dir("tmp").dir("libs")
 val libtommathDir = projectDir.resolve("src/nativeInterop/libtommath")
 
+interface InjectedExecOps {
+    @get:Inject val execOps: ExecOperations
+}
+
 fun KotlinNativeTarget.libtommath() {
     compilations.configureEach {
         cinterops.create("tommath") {
@@ -128,8 +132,10 @@ android {
 
 if (os.isLinux) {
     tasks.getByName<CInteropProcess>("cinteropTommathLinuxX64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         doFirst {
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -146,10 +152,12 @@ if (os.isLinux) {
     }
 
     tasks.getByName<CInteropProcess>("cinteropTommathLinuxArm64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -167,10 +175,12 @@ if (os.isLinux) {
     }
 
     tasks.getByName<CInteropProcess>("cinteropTommathMingwX64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -189,10 +199,12 @@ if (os.isLinux) {
     }
 } else if (os.isWindows) {
     tasks.getByName<CInteropProcess>("cinteropTommathMingwX64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -211,17 +223,19 @@ if (os.isLinux) {
     }
 } else if (os.isMacOsX) {
     tasks.getByName<CInteropProcess>("cinteropTommathMacosX64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
             val output = ByteArrayOutputStream()
-            exec {
+            execOps.exec {
                 standardOutput = output
                 commandLine("xcrun", "--sdk", "macosx", "--show-sdk-path")
             }
             val sysroot = output.use { it.toString().trimEnd() }
 
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -240,17 +254,19 @@ if (os.isLinux) {
     }
 
     tasks.getByName<CInteropProcess>("cinteropTommathMacosArm64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
             val output = ByteArrayOutputStream()
-            exec {
+            execOps.exec {
                 standardOutput = output
                 commandLine("xcrun", "--sdk", "macosx", "--show-sdk-path")
             }
             val sysroot = output.use { it.toString().trimEnd() }
 
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -269,17 +285,19 @@ if (os.isLinux) {
     }
 
     tasks.getByName<CInteropProcess>("cinteropTommathIosArm64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
             val output = ByteArrayOutputStream()
-            exec {
+            execOps.exec {
                 standardOutput = output
                 commandLine("xcrun", "--sdk", "iphoneos", "--show-sdk-path")
             }
             val sysroot = output.use { it.toString().trimEnd() }
 
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -298,17 +316,19 @@ if (os.isLinux) {
     }
 
     tasks.getByName<CInteropProcess>("cinteropTommathIosX64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
             val output = ByteArrayOutputStream()
-            exec {
+            execOps.exec {
                 standardOutput = output
                 commandLine("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
             }
             val sysroot = output.use { it.toString().trimEnd() }
 
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")
@@ -327,17 +347,19 @@ if (os.isLinux) {
     }
 
     tasks.getByName<CInteropProcess>("cinteropTommathIosSimulatorArm64") {
+        val execOps = project.objects.newInstance<InjectedExecOps>().execOps
+
         outputs.file(libsDir.dir(konanTarget.name).file("libtommath.a"))
 
         doFirst {
             val output = ByteArrayOutputStream()
-            exec {
+            execOps.exec {
                 standardOutput = output
                 commandLine("xcrun", "--sdk", "iphonesimulator", "--show-sdk-path")
             }
             val sysroot = output.use { it.toString().trimEnd() }
 
-            exec {
+            execOps.exec {
                 executable = "make"
                 workingDir = libtommathDir
                 args("clean", "libtommath.a")

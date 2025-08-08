@@ -1,7 +1,7 @@
 [versions]
 kotlin-stdlib = "2.2.0"
 kotlin-serialization = "1.9.0"
-android-gradle = {strictly = "8.7.3"}
+android-gradle = {strictly = "8.10.0"}
 dokka = "2.0.0"
 
 [libraries]

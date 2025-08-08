@@ -45,6 +45,6 @@ dokka {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.10.2"
+    gradleVersion = "8.14.3"
     distributionType = Wrapper.DistributionType.BIN
 }
