@@ -48,11 +48,16 @@ Kotlin does not support `BigInteger` and `BigDecimal` types in multiplatform pro
 
 - Fully custom implementation.
 
-#### [korlibs-bignumber](https://github.com/korlibs/korge-korlibs/tree/main/korlibs-bignumber)
+#### [korlibs-bignumber](https://github.com/korlibs/korlibs-bignumber)
 
-- Internal library.
 - No serialization.
 - Custom Native implementation.
+
+#### [kmath-core](https://github.com/SciProgCentre/kmath/tree/master/kmath-core)
+
+- Maths library.
+- No serialization.
+- Fully custom implementation.
 
 #### [mpbignum](https://codeberg.org/loke/array/src/branch/master/mpbignum)
 
