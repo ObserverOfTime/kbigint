@@ -21,7 +21,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
         nativeHeap.free(it)
     }
 
-    @Throws(IllegalStateException::class)
     private constructor(value: CValuesRef<mp_int>) : this() {
         mp_copy(value, this.value.ptr).check()
         mp_clear(value)
@@ -32,7 +31,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual constructor(number: String) : this() {
         mp_init(value.ptr).check()
         mp_read_radix(value.ptr, number, 10).check()
@@ -43,7 +41,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual constructor(number: Int) : this() {
         mp_init_i32(value.ptr, number).check()
     }
@@ -53,7 +50,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual constructor(number: Long) : this() {
         mp_init_i64(value.ptr, number).check()
     }
@@ -132,7 +128,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("add")
-    @Throws(IllegalStateException::class)
     actual operator fun plus(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_add(value.ptr, other.value.ptr, result.ptr).check()
@@ -145,7 +140,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("addInPlace")
-    @Throws(IllegalStateException::class)
     operator fun plusAssign(other: KBigInt) {
         mp_add(value.ptr, other.value.ptr, value.ptr).check()
     }
@@ -156,7 +150,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("subtract")
-    @Throws(IllegalStateException::class)
     actual operator fun minus(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_sub(value.ptr, other.value.ptr, result.ptr).check()
@@ -169,7 +162,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("subtractInPlace")
-    @Throws(IllegalStateException::class)
     operator fun minusAssign(other: KBigInt) {
         mp_sub(value.ptr, other.value.ptr, value.ptr).check()
     }
@@ -180,7 +172,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("multiply")
-    @Throws(IllegalStateException::class)
     actual operator fun times(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_mul(value.ptr, other.value.ptr, result.ptr).check()
@@ -193,7 +184,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("multiplyInPlace")
-    @Throws(IllegalStateException::class)
     operator fun timesAssign(other: KBigInt) {
         mp_mul(value.ptr, other.value.ptr, value.ptr).check()
     }
@@ -204,7 +194,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("divide")
-    @Throws(IllegalStateException::class)
     actual operator fun div(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_div(value.ptr, other.value.ptr, result.ptr, null).check()
@@ -217,7 +206,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("divideInPlace")
-    @Throws(IllegalStateException::class)
     operator fun divAssign(other: KBigInt) {
         mp_div(value.ptr, other.value.ptr, value.ptr, null).check()
     }
@@ -228,7 +216,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("remainder")
-    @Throws(IllegalStateException::class)
     actual operator fun rem(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_div(value.ptr, other.value.ptr, null, result.ptr).check()
@@ -241,7 +228,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("remainderInPlace")
-    @Throws(IllegalStateException::class)
     operator fun remAssign(other: KBigInt) {
         mp_div(value.ptr, other.value.ptr, null, value.ptr).check()
     }
@@ -252,7 +238,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("increment")
-    @Throws(IllegalStateException::class)
     actual operator fun inc() = apply {
         mp_incr(value.ptr).check()
     }
@@ -263,7 +248,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("decrement")
-    @Throws(IllegalStateException::class)
     actual operator fun dec() = apply {
         mp_decr(value.ptr).check()
     }
@@ -274,7 +258,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("negate")
-    @Throws(IllegalStateException::class)
     actual operator fun unaryMinus() = memScoped {
         val result = alloc<mp_int>()
         mp_neg(value.ptr, result.ptr).check()
@@ -286,7 +269,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual infix fun and(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_and(value.ptr, other.value.ptr, result.ptr).check()
@@ -298,7 +280,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual infix fun or(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_or(value.ptr, other.value.ptr, result.ptr).check()
@@ -310,7 +291,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual infix fun xor(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_xor(value.ptr, other.value.ptr, result.ptr).check()
@@ -323,7 +303,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @since 0.3.1
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual fun gcd(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_gcd(value.ptr, other.value.ptr, result.ptr).check()
@@ -336,7 +315,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @since 0.3.1
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual fun lcm(other: KBigInt) = memScoped {
         val result = alloc<mp_int>()
         mp_lcm(value.ptr, other.value.ptr, result.ptr).check()
@@ -349,7 +327,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("shiftLeft")
-    @Throws(IllegalStateException::class)
     actual infix fun shl(n: Int) = memScoped {
         val result = alloc<mp_int>()
         mp_mul_2d(value.ptr, n, result.ptr).check()
@@ -362,7 +339,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("shiftRight")
-    @Throws(IllegalStateException::class)
     actual infix fun shr(n: Int) = memScoped {
         val result = alloc<mp_int>()
         mp_div_2d(value.ptr, n, result.ptr, null).check()
@@ -375,7 +351,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [ArithmeticException] if [n] is negative
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class, ArithmeticException::class)
+    @Throws(ArithmeticException::class)
     actual infix fun pow(n: Int) = memScoped {
         if (n < 0) {
             throw ArithmeticException("Negative exponent")
@@ -391,7 +367,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [ArithmeticException] if the value is negative
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class, ArithmeticException::class)
+    @Throws(ArithmeticException::class)
     actual fun sqrt() = memScoped {
         val result = alloc<mp_int>()
         when (val err = mp_sqrt(value.ptr, result.ptr)) {
@@ -407,7 +383,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * @throws [IllegalStateException] if the operation fails
      */
     @ObjCName("not")
-    @Throws(IllegalStateException::class)
     actual fun inv() = memScoped {
         val result = alloc<mp_int>()
         mp_complement(value.ptr, result.ptr).check()
@@ -419,7 +394,6 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @Throws(IllegalStateException::class)
     actual fun abs() = memScoped {
         val result = alloc<mp_int>()
         mp_abs(value.ptr, result.ptr).check()

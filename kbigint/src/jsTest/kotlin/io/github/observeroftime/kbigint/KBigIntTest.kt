@@ -46,6 +46,7 @@ actual class KBigIntTest {
     }
 
     @Test
+    @Suppress("AssignedValueIsNeverRead")
     actual fun testIncDec() {
         var a = KBigInt(2)
         assertEquals(KBigInt(3), ++a)

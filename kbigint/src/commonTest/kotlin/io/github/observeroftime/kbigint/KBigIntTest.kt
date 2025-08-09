@@ -3,6 +3,7 @@ package io.github.observeroftime.kbigint
 internal const val OVER_MAX_INT = 2147483648L
 internal const val OVER_MAX_LONG = "9223372036854775808"
 
+@Suppress("unused")
 expect class KBigIntTest {
     fun testSign()
     fun testBits()

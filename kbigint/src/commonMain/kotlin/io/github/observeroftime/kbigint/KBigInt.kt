@@ -1,6 +1,7 @@
 package io.github.observeroftime.kbigint
 
 /** A multiplatform implementation of a big integer. */
+@Suppress("unused")
 expect class KBigInt : Comparable<KBigInt> {
     /** Convert a [String] to a [KBigInt]. */
     constructor(number: String)
@@ -94,13 +95,21 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Shift the value to the right by [n]. */
     infix fun shr(n: Int): KBigInt
 
-    /** Raise the value to the [n]-th power. */
+    /**
+     * Raise the value to the [n]-th power.
+     *
+     * @throws [ArithmeticException] if [n] is negative
+     */
     infix fun pow(n: Int): KBigInt
 
     /** Compute the approximate square root of the value. */
     fun sqrt(): KBigInt
 
-    /** Compute the two's-complement of the value. */
+    /**
+     * Compute the two's-complement of the value.
+     *
+     * @throws [ArithmeticException] if the value is negative
+     */
     fun inv(): KBigInt
 
     /** Get the absolute value. */
