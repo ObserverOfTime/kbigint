@@ -41,6 +41,7 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
      *
      * @since 0.3.0
      */
+    @ExperimentalMultiplatform
     actual val bitLength: Int
         get() = KBigIntUtils.bitLength(value)
 

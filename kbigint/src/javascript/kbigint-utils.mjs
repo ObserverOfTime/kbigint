@@ -13,21 +13,31 @@ export function sign(value) {
 /**
  * Count the total number of bits in the value.
  *
- * @param value {bigint}
- * @return {number}
- * @see https://stackoverflow.com/a/76616288/21974435
+ * @param {bigint} value
+ * @returns {number}
  */
 export function bitLength(value) {
-    const n = value >= 0n ? value : ~value;
-    const i = (n.toString(16).length - 1) >> 2;
-    return i + 32 - Math.clz32(Number(n >> BigInt(i)))
+    if (value < 0n) value = ~value;
+    if (value === 0n) return 0;
+
+    let low = 0n, high = 1n;
+
+    while ((value >> high) !== 0n) high <<= 1n;
+
+    while (high - low > 1n) {
+        const mid = (low + high) >> 1n;
+        if ((value >> mid) !== 0n) low = mid;
+        else high = mid;
+    }
+
+    return Number(low) + 1;
 }
 
 /**
  * Count the number of set bits in the value.
  *
- * @param value {bigint}
- * @return {number}
+ * @param {bigint} value
+ * @returns {number}
  * @see https://stackoverflow.com/a/72518920/21974435
  */
 export function bitCount(value) {
@@ -70,7 +80,7 @@ export function cmp(a, b) {
 }
 
 /**
- * Find the Greatest Common Divisor
+ * Find the Greatest Common Divisor of the two values.
  *
  * @param {bigint} a
  * @param {bigint} b
@@ -95,8 +105,8 @@ export function pow(value, n) {
 /**
  * Convert a {@link BigInt} to an {@link Int8Array}.
  *
- * @param value {bigint}
- * @return {Int8Array}
+ * @param {bigint} value
+ * @returns {Int8Array}
  * @see https://coolaj86.com/articles/convert-js-bigints-to-typedarrays/
  */
 export function toByteArray(value) {
@@ -113,8 +123,8 @@ export function toByteArray(value) {
 /**
  * Convert a numeric {@link Array} to a {@link BigInt}.
  *
- * @param bytes {number[] | ArrayLike<number>}
- * @return {bigint}
+ * @param {number[] | ArrayLike<number>} bytes
+ * @returns {bigint}
  * @see https://coolaj86.com/articles/convert-js-bigints-to-typedarrays/
  */
 export function fromByteArray(bytes) {
@@ -140,8 +150,8 @@ function newtonRoot(n, k) {
 
 /**
  * @private
- * @param str {string}
- * @return {string}
+ * @param {string} str
+ * @returns {string}
  */
 function bitFlip(str) {
     return Array.from(str, i => i === '0' ? '1' : '0').join('')
@@ -149,8 +159,8 @@ function bitFlip(str) {
 
 /**
  * @private
- * @param bn {bigint}
- * @return {bigint}
+ * @param {bigint} bn
+ * @returns {bigint}
  * @see https://coolaj86.com/articles/convert-decimal-to-hex-with-js-bigints/
  */
 function bitNot(bn) {
@@ -163,8 +173,8 @@ function bitNot(bn) {
 
 /**
  * @private
- * @param hex {string}
- * @return {number}
+ * @param {string} hex
+ * @returns {number}
  */
 function highByte(hex) {
     return parseInt(hex.slice(0, 2), 16);
@@ -172,8 +182,8 @@ function highByte(hex) {
 
 /**
  * @private
- * @param hex {string}
- * @return {bigint}
+ * @param {string} hex
+ * @returns {bigint}
  * @see https://coolaj86.com/articles/convert-hex-to-decimal-with-js-bigints/
  */
 function hexToBn(hex) {
@@ -189,8 +199,8 @@ function hexToBn(hex) {
 
 /**
  * @private
- * @param bn {bigint}
- * @return {string}
+ * @param {bigint} bn
+ * @returns {string}
  * @see https://coolaj86.com/articles/convert-decimal-to-hex-with-js-bigints/
  */
 function bnToHex(bn) {

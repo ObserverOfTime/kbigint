@@ -16,6 +16,7 @@ actual class KBigIntTest {
     }
 
     @Test
+    @OptIn(ExperimentalMultiplatform::class)
     actual fun testBits() {
         val a = KBigInt(1024)
         val b = KBigInt(-1024)
