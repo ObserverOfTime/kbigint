@@ -99,6 +99,18 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     actual infix fun xor(other: KBigInt) = KBigInt(value xor other.value)
 
     /**
+     * Divide two [KBigInt] values and include the remainder.
+     *
+     * @since 0.5.0
+     * @return a `(quotient, remainder)` pair
+     */
+    @JvmName("divideAndRemainder")
+    actual fun divRem(other: KBigInt): Pair<KBigInt, KBigInt> {
+        val (quotient, remainder) = value.divideAndRemainder(other.value)
+        return Pair(KBigInt(quotient), KBigInt(remainder))
+    }
+
+    /**
      * Find the (absolute) GCD of two [KBigInt] values.
      *
      * @since 0.3.1

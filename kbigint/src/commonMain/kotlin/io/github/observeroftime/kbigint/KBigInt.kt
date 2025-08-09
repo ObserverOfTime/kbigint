@@ -76,6 +76,14 @@ expect class KBigInt : Comparable<KBigInt> {
     infix fun xor(other: KBigInt): KBigInt
 
     /**
+     * Divide two [KBigInt] values and include the remainder.
+     *
+     * @since 0.5.0
+     * @return a `(quotient, remainder)` pair
+     */
+    fun divRem(other: KBigInt): Pair<KBigInt, KBigInt>
+
+    /**
      * Find the (absolute) GCD of two [KBigInt] values.
      *
      * @since 0.3.1

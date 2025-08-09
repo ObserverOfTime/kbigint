@@ -298,6 +298,20 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Divide two [KBigInt] values and include the remainder.
+     *
+     * @since 0.5.0
+     * @return a `(quotient, remainder)` pair
+     */
+    @ObjCName("divideAndRemainder")
+    actual fun divRem(other: KBigInt) = memScoped {
+        val quotient = alloc<mp_int>()
+        val remainder = alloc<mp_int>()
+        mp_div(value.ptr, other.value.ptr, quotient.ptr, remainder.ptr).check()
+        Pair(KBigInt(quotient.ptr), KBigInt(remainder.ptr))
+    }
+
+    /**
      * Find the (absolute) GCM of two [KBigInt] values.
      *
      * @since 0.3.1

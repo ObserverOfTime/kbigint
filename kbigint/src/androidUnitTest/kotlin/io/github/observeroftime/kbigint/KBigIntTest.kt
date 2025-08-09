@@ -42,6 +42,8 @@ actual class KBigIntTest {
         assertEquals(KBigInt("19807040628566084398385987584"), string * long)
         assertEquals(KBigInt(4294967296L), string / long)
         assertEquals(KBigInt(0), string % long)
+
+        assertEquals(Pair(KBigInt(4294967296L), KBigInt(0)), string.divRem(long))
     }
 
     @Test

@@ -136,6 +136,22 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
     }
 
     /**
+     * Divide two [KBigInt] values and include the remainder.
+     *
+     * @since 0.5.0
+     * @return a `(quotient, remainder)` pair
+     */
+    @JsName("_divideAndRemainder")
+    @Suppress("NON_EXPORTABLE_TYPE")
+    actual fun divRem(other: KBigInt): Pair<KBigInt, KBigInt> {
+        val a = this.value
+        val b = other.value
+        val quotient = js("a / b").unsafeCast<BigInt>()
+        val remainder = js("a % b").unsafeCast<BigInt>()
+        return Pair(KBigInt(quotient), KBigInt(remainder))
+    }
+
+    /**
      * Find the (absolute) GCD of two [KBigInt] values.
      *
      * @since 0.3.1
