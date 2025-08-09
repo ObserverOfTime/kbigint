@@ -114,9 +114,17 @@ expect class KBigInt : Comparable<KBigInt> {
      * Compute the integer logarithm base [b] of the number.
      *
      * @since 0.5.0
-     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     * @throws [ArithmeticException] if the value is `0` or negative, or `b < 2`
      */
     infix fun log(b: Int): Int
+
+    /**
+     * Compute the approximate [n]-th root of the value.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if the value is negative and `n` is positive, or `n <= 0`
+     */
+    infix fun root(n: Int): KBigInt
 
     /**
      * Compute the approximate square root of the value.

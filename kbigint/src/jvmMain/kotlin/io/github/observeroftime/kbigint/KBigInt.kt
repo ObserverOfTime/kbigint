@@ -146,7 +146,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      * Compute the integer logarithm base [b] of the number.
      *
      * @since 0.5.0
-     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     * @throws [ArithmeticException] if the value is `0` or negative, or `b < 2`
      */
     @ExperimentalMultiplatform
     @Throws(ArithmeticException::class)
@@ -161,6 +161,44 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
         return if (lowerBound > value) guess - 1
         else if (lowerBound.multiply(base) <= value) guess + 1
         else guess
+    }
+
+    /**
+     * Compute the approximate [n]-th root of the value.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if the value is negative and `n` is positive, or `n <= 0`
+     */
+    @ExperimentalStdlibApi
+    @Throws(ArithmeticException::class)
+    actual infix fun root(n: Int): KBigInt {
+        if (n <= 0) throw ArithmeticException("Non-positive root")
+        if (sign == -1 && (n and 1) == 0)
+            throw ArithmeticException("Even root of negative number")
+        if (n == 1 || sign == 0 || this == KBigInt(1)) return this
+        if (n == 2) return sqrt()
+
+        var low = BigInteger.ZERO
+        var high = value.abs()
+        var mid: BigInteger
+
+        while (low <= high) {
+            mid = (low + high) / BigInteger.valueOf(2L)
+            when (mid.pow(n).compareTo(value.abs())) {
+                -1 -> {
+                    low = mid + BigInteger.ONE
+                }
+                1 -> {
+                    high = mid - BigInteger.ONE
+                }
+                else -> {
+                    high = mid
+                    break
+                }
+            }
+        }
+
+        return KBigInt(if (sign == -1) -high else high)
     }
 
     /**

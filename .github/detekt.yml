@@ -1,12 +1,16 @@
 complexity:
   TooManyFunctions:
     active: false
+  CyclomaticComplexMethod:
+    threshold: 20
 
 style:
   WildcardImport:
     active: false
   ForbiddenComment:
     active: false
+  ReturnCount:
+    max: 3
   UnusedPrivateProperty:
     excludes:
       - "**/commonMain/**"
@@ -18,6 +22,7 @@ style:
       - "-1"
       - "0"
       - "1"
+      - "2"
       - "10"
     ignoreAnnotated:
       - Test

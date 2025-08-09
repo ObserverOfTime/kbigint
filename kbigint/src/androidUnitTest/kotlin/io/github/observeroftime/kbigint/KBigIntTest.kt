@@ -93,6 +93,21 @@ actual class KBigIntTest {
     }
 
     @Test
+    @OptIn(ExperimentalStdlibApi::class)
+    actual fun testRoot() {
+        assertEquals(KBigInt("100"), KBigInt("1000000") root 3)
+        assertEquals(KBigInt("-10"), KBigInt("-100000") root 5)
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt("-1000000") root 4
+        }
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt(1) root -1
+        }
+    }
+
+    @Test
     @OptIn(ExperimentalMultiplatform::class)
     actual fun testLog() {
         assertEquals(3, KBigInt(10) log 2)

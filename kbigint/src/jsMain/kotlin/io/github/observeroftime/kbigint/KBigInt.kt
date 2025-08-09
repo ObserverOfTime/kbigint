@@ -196,17 +196,30 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
      * @throws [ArithmeticException] if [n] is negative
      */
     actual infix fun pow(n: Int): KBigInt {
-        if (n < 0)
-            throw ArithmeticException("Negative exponent")
+        if (n < 0) throw ArithmeticException("Negative exponent")
         // FIXME: https://youtrack.jetbrains.com/issue/KT-60221/
         return KBigInt(KBigIntUtils.pow(value, n))
+    }
+
+    /**
+     * Compute the approximate [n]-th root of the value.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if the value is negative and `n` is positive, or `n <= 0`
+     */
+    @ExperimentalStdlibApi
+    actual infix fun root(n: Int): KBigInt {
+        if (n <= 0) throw ArithmeticException("Non-positive root")
+        if (sign == -1 && (n and 1) == 0)
+            throw ArithmeticException("Even root of negative number")
+        return KBigInt(KBigIntUtils.root(value, BigInt(n)))
     }
 
     /**
      * Compute the integer logarithm base [b] of the number.
      *
      * @since 0.5.0
-     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     * @throws [ArithmeticException] if the value is `0` or negative, or `b < 2`
      */
     @ExperimentalMultiplatform
     actual infix fun log(b: Int): Int {

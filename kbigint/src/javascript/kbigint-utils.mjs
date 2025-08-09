@@ -57,6 +57,35 @@ export function abs(value) {
 }
 
 /**
+ * Compute the `k`-th root of the number `n`.
+ *
+ * @param {bigint} value
+ * @param {bigint} n
+ * @returns {bigint}
+ */
+export function root(value, n) {
+    if (value === 0n || value === 1n) return value;
+    const x = abs(value);
+    let low = 0n, high = x, mid;
+
+    while (low <= high) {
+        mid = (low + high) / 2n;
+        switch (cmp(mid ** n, x)) {
+            case -1:
+                low = mid + 1n;
+                break;
+            case 1:
+                high = mid - 1n;
+                break;
+            default:
+                return value < 0n ? -mid : mid;
+        }
+    }
+
+    return value < 0n ? -high : high;
+}
+
+/**
  * Compute the approximate square root of the value.
  *
  * @param {bigint} value
@@ -64,7 +93,7 @@ export function abs(value) {
  */
 export function sqrt(value) {
     if (value < 2n) return value;
-    if (value >= 16n) newtonRoot(value, 1n);
+    if (value >= 16n) return root(value, 2n);
     return BigInt(Math.sqrt(Number(value)) | 0);
 }
 
@@ -151,18 +180,6 @@ export function fromByteArray(bytes) {
         hex.push(h.length & 1 ? '0' + h : h);
     });
     return hexToBn(hex.join(''));
-}
-
-/**
- * @private
- * @param {bigint} n
- * @param {bigint} k
- * @returns {bigint}
- * @see https://stackoverflow.com/a/53684036/21974435
- */
-function newtonRoot(n, k) {
-    const x = ((n / k) + k) >> 1n;
-    return k === x || k === (x - 1n) ? k : newtonRoot(n, x);
 }
 
 /**

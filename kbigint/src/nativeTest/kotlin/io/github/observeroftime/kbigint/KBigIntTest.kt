@@ -114,6 +114,20 @@ actual class KBigIntTest {
     }
 
     @Test
+    actual fun testRoot() {
+        assertEquals(KBigInt("100"), KBigInt("1000000") root 3)
+        assertEquals(KBigInt("-10"), KBigInt("-100000") root 5)
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt("-1000000") root 4
+        }
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt(1) root -1
+        }
+    }
+
+    @Test
     actual fun testLog() {
         assertEquals(3, KBigInt(10) log 2)
         assertEquals(20, KBigInt("100000000000000000000") log 10)

@@ -360,6 +360,25 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Compute the approximate [n]-th root of the value.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if the value is negative and `n` is positive, or `n <= 0`
+     */
+    @Throws(ArithmeticException::class)
+    actual infix fun root(n: Int) = memScoped {
+        if (n <= 0) throw ArithmeticException("Non-positive root")
+        if (sign == -1 && (n and 1) == 0)
+            throw ArithmeticException("Even root of negative number")
+        if (sign == 0 || this == KBigInt(1))
+            return@memScoped this@KBigInt
+
+        val result = alloc<mp_int>()
+        kbi_mp_root(value.ptr, n, result.ptr).check()
+        KBigInt(result.ptr)
+    }
+
+    /**
      * Raise the value to the [n]-th power.
      *
      * @throws [ArithmeticException] if [n] is negative
@@ -367,9 +386,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      */
     @Throws(ArithmeticException::class)
     actual infix fun pow(n: Int) = memScoped {
-        if (n < 0) {
-            throw ArithmeticException("Negative exponent")
-        }
+        if (n < 0) throw ArithmeticException("Negative exponent")
         val result = alloc<mp_int>()
         kbi_mp_pow(value.ptr, n, result.ptr).check()
         KBigInt(result.ptr)
@@ -379,7 +396,7 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      * Compute the integer logarithm base [b] of the number.
      *
      * @since 0.5.0
-     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     * @throws [ArithmeticException] if the value is `0` or negative, or `b < 2`
      * @throws [IllegalStateException] if the operation fails
      */
     @Throws(ArithmeticException::class)

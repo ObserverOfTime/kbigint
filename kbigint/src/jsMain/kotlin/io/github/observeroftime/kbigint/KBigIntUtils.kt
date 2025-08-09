@@ -19,6 +19,7 @@ internal external object KBigIntUtils {
     fun cmp(a: BigInt, b: BigInt): Int
     fun gcd(a: BigInt, b: BigInt): BigInt
     fun pow(value: BigInt, n: Int): BigInt
+    fun root(value: BigInt, n: BigInt): BigInt
     fun log(value: BigInt, b: Int): Int
     fun toByteArray(value: BigInt): ByteArray
     fun fromByteArray(bytes: ByteArray): BigInt
