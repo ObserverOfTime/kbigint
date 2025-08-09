@@ -103,6 +103,23 @@ export function pow(value, n) {
 }
 
 /**
+ * Compute the base `b` integer logarithm of the value.
+ *
+ * @param {bigint} value
+ * @param {number} b
+ * @returns {number}
+ */
+export function log(value, b) {
+    const guess = ((bitLength(value) - 1) / Math.log2(b)) | 0;
+    const base = BigInt(b)
+    const lowerBound = base ** BigInt(guess);
+
+    if (lowerBound > value) return guess - 1;
+    if (lowerBound * base <= value) return guess + 1;
+    return guess;
+}
+
+/**
  * Convert a {@link BigInt} to an {@link Int8Array}.
  *
  * @param {bigint} value

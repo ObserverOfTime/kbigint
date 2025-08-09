@@ -362,6 +362,23 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Compute the integer logarithm base [b] of the number.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     * @throws [IllegalStateException] if the operation fails
+     */
+    @Throws(ArithmeticException::class)
+    actual infix fun log(b: Int) = memScoped {
+        val result = alloc<IntVar>()
+        when (val err = mp_log_n(value.ptr, b, result.ptr)) {
+            mp_err.MP_OKAY -> result.value
+            mp_err.MP_VAL -> throw ArithmeticException("Non-positive KBigInt or base < 2")
+            else -> throw IllegalStateException(mp_error_to_string(err)?.toKString())
+        }
+    }
+
+    /**
      * Compute the approximate square root of the value.
      *
      * @throws [ArithmeticException] if the value is negative

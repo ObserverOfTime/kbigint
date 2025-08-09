@@ -5,6 +5,8 @@ package io.github.observeroftime.kbigint
 import android.annotation.TargetApi
 import android.os.Build.VERSION_CODES
 import java.math.BigInteger
+import kotlin.math.floor
+import kotlin.math.log2
 
 /** A multiplatform implementation of a big integer. */
 actual class KBigInt private constructor(private var value: BigInteger) : Comparable<KBigInt> {
@@ -129,6 +131,27 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      */
     @Throws(ArithmeticException::class)
     actual infix fun pow(n: Int) = KBigInt(value.pow(n))
+
+    /**
+     * Compute the integer logarithm base [b] of the number.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     */
+    @ExperimentalMultiplatform
+    @Throws(ArithmeticException::class)
+    actual infix fun log(b: Int): Int {
+        if (value.signum() < 1 || b <= 1)
+            throw ArithmeticException("Non-positive KBigInt or base < 2")
+
+        val guess = floor((bitLength - 1) / log2(b.toDouble())).toInt()
+        val base = BigInteger.valueOf(b.toLong())
+        val lowerBound = base.pow(guess)
+
+        return if (lowerBound > value) guess - 1
+        else if (lowerBound.multiply(base) <= value) guess + 1
+        else guess
+    }
 
     /**
      * Compute the approximate square root of the value.

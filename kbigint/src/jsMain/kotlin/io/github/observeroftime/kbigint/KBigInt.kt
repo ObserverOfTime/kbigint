@@ -2,7 +2,7 @@ package io.github.observeroftime.kbigint
 
 /** A multiplatform implementation of a big integer. */
 @JsExport
-@Suppress("UNUSED_VARIABLE")
+@Suppress("UnusedVariable", "unused")
 @OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
 actual class KBigInt private constructor(@JsExternalArgument private var value: BigInt) : Comparable<KBigInt> {
     /** Convert a [String] to a [KBigInt]. */
@@ -184,6 +184,19 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
             throw ArithmeticException("Negative exponent")
         // FIXME: https://youtrack.jetbrains.com/issue/KT-60221/
         return KBigInt(KBigIntUtils.pow(value, n))
+    }
+
+    /**
+     * Compute the integer logarithm base [b] of the number.
+     *
+     * @since 0.5.0
+     * @throws [ArithmeticException] if `this <= 0 || b < 2`
+     */
+    @ExperimentalMultiplatform
+    actual infix fun log(b: Int): Int {
+        if (sign < 1 || b <= 1)
+            throw ArithmeticException("Non-positive KBigInt or base < 2")
+        return KBigIntUtils.log(value, b)
     }
 
     /**

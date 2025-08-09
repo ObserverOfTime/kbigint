@@ -1,6 +1,7 @@
 package io.github.observeroftime.kbigint
 
 import kotlin.test.*
+import kotlin.test.Test
 
 actual class KBigIntTest {
     companion object {
@@ -88,6 +89,21 @@ actual class KBigIntTest {
     @Test
     actual fun testPow() {
         assertEquals(KBigInt("4611686018427387904"), long pow 2)
+    }
+
+    @Test
+    @OptIn(ExperimentalMultiplatform::class)
+    actual fun testLog() {
+        assertEquals(3, KBigInt(10) log 2)
+        assertEquals(20, KBigInt("100000000000000000000") log 10)
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt(-1) log 2
+        }
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt(2) log 1
+        }
     }
 
     @Test

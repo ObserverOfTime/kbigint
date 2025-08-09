@@ -112,6 +112,20 @@ actual class KBigIntTest {
     }
 
     @Test
+    actual fun testLog() {
+        assertEquals(3, KBigInt(10) log 2)
+        assertEquals(20, KBigInt("100000000000000000000") log 10)
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt(-1) log 2
+        }
+
+        assertFailsWith(ArithmeticException::class) {
+            KBigInt(2) log 1
+        }
+    }
+
+    @Test
     actual fun testSqrt() {
         assertEquals(KBigInt(46340), long.sqrt())
 

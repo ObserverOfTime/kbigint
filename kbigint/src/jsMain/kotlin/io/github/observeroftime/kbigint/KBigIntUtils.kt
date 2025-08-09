@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.github.observeroftime.kbigint
 
 internal external class BigInt {
@@ -17,6 +19,7 @@ internal external object KBigIntUtils {
     fun cmp(a: BigInt, b: BigInt): Int
     fun gcd(a: BigInt, b: BigInt): BigInt
     fun pow(value: BigInt, n: Int): BigInt
+    fun log(value: BigInt, b: Int): Int
     fun toByteArray(value: BigInt): ByteArray
     fun fromByteArray(bytes: ByteArray): BigInt
 }

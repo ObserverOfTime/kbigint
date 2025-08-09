@@ -16,6 +16,7 @@ expect class KBigIntTest {
     fun testGcdLcm()
     fun testPow()
     fun testSqrt()
+    fun testLog()
     fun testAbs()
     fun testCompare()
     fun testEquals()
