@@ -77,15 +77,15 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
 
     /** Increment the value. */
     @JvmName("increment")
-    actual operator fun inc() = KBigInt(value.inc())
+    actual operator fun inc() = KBigInt(++value)
 
     /** Decrement the value. */
     @JvmName("decrement")
-    actual operator fun dec() = KBigInt(value.dec())
+    actual operator fun dec() = KBigInt(--value)
 
     /** Negate the value. */
     @JvmName("negate")
-    actual operator fun unaryMinus() = KBigInt(value.unaryMinus())
+    actual operator fun unaryMinus() = KBigInt(-value)
 
     /** Perform a bitwise `AND` operation. */
     actual infix fun and(other: KBigInt) = KBigInt(value and other.value)
@@ -151,7 +151,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     @ExperimentalMultiplatform
     @Throws(ArithmeticException::class)
     actual infix fun log(b: Int): Int {
-        if (value.signum() < 1 || b <= 1)
+        if (sign < 1 || b <= 1)
             throw ArithmeticException("Non-positive KBigInt or base < 2")
 
         val guess = floor((bitLength - 1) / log2(b.toDouble())).toInt()
@@ -170,14 +170,14 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      */
     @Throws(ArithmeticException::class)
     actual fun sqrt(): KBigInt {
-        if (value.signum() == -1)
+        if (sign == -1)
             throw ArithmeticException("Negative KBigInt")
         return KBigInt(value.sqrt())
     }
 
     /** Compute the two's-complement of the value. */
     @JvmName("not")
-    actual fun inv() = KBigInt(value.not())
+    actual fun inv() = KBigInt(!value)
 
     /** Get the absolute value. */
     actual fun abs() = KBigInt(value.abs())
