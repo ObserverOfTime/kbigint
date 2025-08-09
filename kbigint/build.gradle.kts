@@ -47,7 +47,7 @@ kotlin {
 
             testTask {
                 useKarma {
-                    useChromiumHeadless()
+                    useChromeHeadlessNoSandbox()
                 }
             }
         }
