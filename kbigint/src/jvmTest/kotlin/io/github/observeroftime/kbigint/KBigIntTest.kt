@@ -94,7 +94,7 @@ actual class KBigIntTest {
     }
 
     @Test
-    @OptIn(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalMultiplatform::class)
     actual fun testRoot() {
         assertEquals(KBigInt("100"), KBigInt("1000000") root 3)
         assertEquals(KBigInt("-10"), KBigInt("-100000") root 5)

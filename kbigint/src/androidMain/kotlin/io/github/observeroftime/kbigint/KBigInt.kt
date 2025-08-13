@@ -178,7 +178,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      *
      * @since 0.5.0
      */
-    @ExperimentalStdlibApi
+    @ExperimentalMultiplatform
     actual infix fun root(n: Int): KBigInt {
         if (n <= 0) throw ArithmeticException("Non-positive root")
         if (sign == -1 && (n and 1) == 0)

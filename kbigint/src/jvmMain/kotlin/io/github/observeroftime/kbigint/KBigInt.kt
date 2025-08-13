@@ -177,7 +177,7 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
      * @since 0.5.0
      * @throws [ArithmeticException] if the value is negative and `n` is positive, or `n <= 0`
      */
-    @ExperimentalStdlibApi
+    @ExperimentalMultiplatform
     @Throws(ArithmeticException::class)
     actual infix fun root(n: Int): KBigInt {
         if (n <= 0) throw ArithmeticException("Non-positive root")

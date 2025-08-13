@@ -218,7 +218,7 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
      * @since 0.5.0
      * @throws [ArithmeticException] if the value is negative and `n` is positive, or `n <= 0`
      */
-    @ExperimentalStdlibApi
+    @ExperimentalMultiplatform
     actual infix fun root(n: Int): KBigInt {
         if (n <= 0) throw ArithmeticException("Non-positive root")
         if (sign == -1 && (n and 1) == 0)
