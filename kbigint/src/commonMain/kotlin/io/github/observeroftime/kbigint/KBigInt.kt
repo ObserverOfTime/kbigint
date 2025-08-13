@@ -66,6 +66,13 @@ expect class KBigInt : Comparable<KBigInt> {
     /** Negate the value. */
     operator fun unaryMinus(): KBigInt
 
+    /**
+     * Compute the two's-complement of the value.
+     *
+     * @since 0.5.0
+     */
+    operator fun not(): KBigInt
+
     /** Perform a bitwise `AND` operation. */
     infix fun and(other: KBigInt): KBigInt
 
@@ -133,11 +140,8 @@ expect class KBigInt : Comparable<KBigInt> {
      */
     fun sqrt(): KBigInt
 
-    /**
-     * Compute the two's-complement of the value.
-     *
-     * @throws [ArithmeticException] if the value is negative
-     */
+    /** Compute the two's-complement of the value. */
+    @Deprecated("Use the not operator instead", ReplaceWith("!this"))
     fun inv(): KBigInt
 
     /** Get the absolute value. */

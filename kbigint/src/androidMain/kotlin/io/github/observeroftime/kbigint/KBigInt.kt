@@ -90,6 +90,13 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     @JvmName("negate")
     actual operator fun unaryMinus() = KBigInt(-value)
 
+    /**
+     * Compute the two's-complement of the value.
+     *
+     * @since 0.5.0
+     */
+    actual operator fun not() = KBigInt(!value)
+
     /** Perform a bitwise `AND` operation. */
     actual infix fun and(other: KBigInt) = KBigInt(value and other.value)
 
@@ -217,8 +224,8 @@ actual class KBigInt private constructor(private var value: BigInteger) : Compar
     }
 
     /** Compute the two's-complement of the value. */
-    @JvmName("not")
-    actual fun inv() = KBigInt(!value)
+    @Deprecated("Use the not operator instead", ReplaceWith("!this"))
+    actual fun inv() = not()
 
     /** Get the absolute value. */
     actual fun abs() = KBigInt(value.abs())

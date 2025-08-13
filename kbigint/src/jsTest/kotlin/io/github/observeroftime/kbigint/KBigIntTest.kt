@@ -74,9 +74,9 @@ actual class KBigIntTest {
     }
 
     @Test
-    actual fun testInvert() {
-        assertEquals(KBigInt(-2147483649L), long.inv())
-        assertEquals(KBigInt(2147483649L), -long.inv())
+    actual fun testNot() {
+        assertEquals(KBigInt(-2147483649L), !long)
+        assertEquals(KBigInt(2147483649L), -!long)
     }
 
     @Test

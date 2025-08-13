@@ -114,6 +114,17 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
         return KBigInt(js("-x").unsafeCast<BigInt>())
     }
 
+    /**
+     * Compute the two's-complement of the value.
+     *
+     * @since 0.5.0
+     */
+    @JsName("not")
+    actual operator fun not(): KBigInt {
+        val x = this.value
+        return KBigInt(js("~x").unsafeCast<BigInt>())
+    }
+
     /** Perform a bitwise `AND` operation. */
     actual infix fun and(other: KBigInt): KBigInt {
         val a = this.value
@@ -241,11 +252,8 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
     }
 
     /** Compute the two's-complement of the value. */
-    @JsName("not")
-    actual fun inv(): KBigInt {
-        val x = this.value
-        return KBigInt(js("~x").unsafeCast<BigInt>())
-    }
+    @Deprecated("Use the not operator instead", ReplaceWith("!this"))
+    actual fun inv() = not()
 
     /** Get the absolute value. */
     actual fun abs() = KBigInt(KBigIntUtils.abs(value))

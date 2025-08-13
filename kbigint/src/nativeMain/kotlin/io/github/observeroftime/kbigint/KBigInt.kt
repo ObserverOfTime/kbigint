@@ -265,6 +265,17 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
     }
 
     /**
+     * Compute the two's-complement of the value.
+     *
+     * @since 0.5.0
+     */
+    actual operator fun not(): KBigInt = memScoped {
+        val result = alloc<mp_int>()
+        mp_complement(value.ptr, result.ptr).check()
+        KBigInt(result.ptr)
+    }
+
+    /**
      * Perform a bitwise `AND` operation.
      *
      * @throws [IllegalStateException] if the operation fails
@@ -430,12 +441,9 @@ actual class KBigInt private constructor(private var value: mp_int) : Comparable
      *
      * @throws [IllegalStateException] if the operation fails
      */
-    @ObjCName("not")
-    actual fun inv() = memScoped {
-        val result = alloc<mp_int>()
-        mp_complement(value.ptr, result.ptr).check()
-        KBigInt(result.ptr)
-    }
+    @Suppress("unused") // deprecating not enough I guess
+    @Deprecated("Use the not operator instead", ReplaceWith("!this"))
+    actual fun inv() = not()
 
     /**
      * Get the absolute value.
