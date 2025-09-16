@@ -175,9 +175,9 @@ export function toByteArray(value) {
  */
 export function fromByteArray(bytes) {
     const hex = new Array(bytes.length);
-    Uint8Array.from(bytes).forEach(n => {
+    Uint8Array.from(bytes).forEach((n, i) => {
         const h = n.toString(16);
-        hex.push(h.length & 1 ? '0' + h : h);
+        hex[i] = h.length & 1 ? '0' + h : h;
     });
     return hexToBn(hex.join(''));
 }
