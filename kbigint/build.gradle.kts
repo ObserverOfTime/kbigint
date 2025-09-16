@@ -1,6 +1,5 @@
 import java.io.ByteArrayOutputStream
 import org.gradle.internal.os.OperatingSystem
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 
@@ -60,8 +59,10 @@ kotlin {
 
         useEsModules()
 
-        @Suppress("OPT_IN_USAGE")
-        compilerOptions.target.set("es2015")
+        compilerOptions {
+            target.set("es2015")
+            freeCompilerArgs.addAll("-Xes-long-as-bigint")
+        }
     }
 
     if (os.isLinux) {
@@ -88,7 +89,6 @@ kotlin {
     sourceSets {
         commonMain {
             languageSettings {
-                @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 compilerOptions {
                     freeCompilerArgs.add("-Xexpect-actual-classes")
                 }
@@ -387,6 +387,20 @@ tasks.register<Jar>("javadocJar") {
     group = "documentation"
     archiveClassifier.set("javadoc")
     from(files("README.md"))
+}
+
+tasks.whenTaskAdded {
+    if (name.endsWith("TestCinterop-tommathKlib")) {
+        dependsOn(
+            name.replace("""([a-zA-Z]+)(X64|Arm64).+""".toRegex()) { match ->
+                buildString {
+                    append("cinteropTestTommath")
+                    append(match.groupValues[1].replaceFirstChar(Char::uppercase))
+                    append(match.groupValues[2])
+                }
+            }
+        )
+    }
 }
 
 dokka {

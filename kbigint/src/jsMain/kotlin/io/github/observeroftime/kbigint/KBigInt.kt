@@ -14,7 +14,7 @@ actual class KBigInt private constructor(@JsExternalArgument private var value: 
     actual constructor(number: Int) : this(BigInt(number))
 
     /** Convert a [Long] to a [KBigInt]. */
-    @JsName("_fromLong")
+    @JsName("fromBigInt")
     @Suppress("NON_EXPORTABLE_TYPE")
     actual constructor(number: Long) : this(BigInt(number))
 

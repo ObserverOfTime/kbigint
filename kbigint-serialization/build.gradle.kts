@@ -43,8 +43,10 @@ kotlin {
 
         useEsModules()
 
-        @Suppress("OPT_IN_USAGE")
-        compilerOptions.target.set("es2015")
+        compilerOptions {
+            target.set("es2015")
+            freeCompilerArgs.addAll("-Xes-long-as-bigint")
+        }
     }
 
     if (os.isLinux) {
@@ -79,7 +81,6 @@ kotlin {
 
         commonTest {
             languageSettings {
-                @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 compilerOptions {
                     freeCompilerArgs.add("-Xexpect-actual-classes")
                 }
