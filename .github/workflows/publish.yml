@@ -51,7 +51,7 @@ jobs:
               publishIosSimulatorArm64PublicationToLocalRepository
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set up Java
@@ -91,7 +91,7 @@ jobs:
           SIGNING_PASSWORD: ${{secrets.SIGNING_PASSWORD}}
           KONAN_DATA_DIR: ${{runner.tool_cache}}/konan
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: kbigint-${{matrix.platform == 'macOS/iOS' && format('macOS-iOS-{0}', matrix.arch) || matrix.platform}}
           path: |
@@ -110,7 +110,7 @@ jobs:
       SONATYPE_AUTH: "Authorization: Bearer ${{secrets.SONATYPE_TOKEN}}"
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: kbigint
           pattern: kbigint-*
@@ -141,7 +141,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Generate changelog
