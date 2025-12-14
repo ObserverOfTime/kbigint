@@ -51,7 +51,7 @@ jobs:
             targets: macosArm64Test iosSimulatorArm64Test
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set up Java
@@ -78,12 +78,12 @@ jobs:
             sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/kotlin=\1.\2.\3/p' gradle/libs.versions.toml
           } >> "$GITHUB_OUTPUT"
       - name: Cache Kotlin/Native prebuilt
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
           key: konan-${{runner.os}}-prebuilt-${{steps.versions.outputs.kotlin}}
       - name: Cache Kotlin/Native dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         if: matrix.platform != 'JVM' && matrix.platform != 'Android' && matrix.platform != 'JS'
         with:
           path: ${{runner.tool_cache}}/konan/dependencies
