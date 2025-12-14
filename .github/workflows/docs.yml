@@ -26,7 +26,7 @@ jobs:
       url: ${{steps.deployment.outputs.page_url}}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           submodules: true
       - name: Set up Java
@@ -48,12 +48,12 @@ jobs:
             sed -n 's/kotlin-stdlib = "\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)"/kotlin=\1.\2.\3/p' gradle/libs.versions.toml
           } >> "$GITHUB_OUTPUT"
       - name: Restore Kotlin/Native prebuilt
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{runner.tool_cache}}/konan/kotlin-native-prebuilt-*
           key: konan-${{runner.os}}-prebuilt-${{steps.versions.outputs.kotlin}}
       - name: Restore Kotlin/Native dependencies
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{runner.tool_cache}}/konan/dependencies
           key: konan-${{runner.os}}-dependencies
