@@ -51,7 +51,7 @@ jobs:
             targets: macosArm64Test iosSimulatorArm64Test
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: true
       - name: Set up Java
@@ -89,7 +89,7 @@ jobs:
           path: ${{runner.tool_cache}}/konan/dependencies
           key: konan-${{runner.os}}-dependencies
       - name: Submit dependency graph
-        uses: gradle/actions/dependency-submission@v5
+        uses: gradle/actions/dependency-submission@v6
         if: github.ref_name == 'master'
         with:
           cache-disabled: true
