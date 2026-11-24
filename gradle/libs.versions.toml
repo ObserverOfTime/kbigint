@@ -1,8 +1,8 @@
 [versions]
-kotlin-stdlib = "2.3.21"
-kotlin-serialization = "1.11.0"
+kotlin-stdlib = "2.4.21"
+kotlin-serialization = "1.13.0"
 android-gradle = {strictly = "8.11.1"}
-dokka = "2.2.0"
+dokka = "2.3.0"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-stdlib" }
